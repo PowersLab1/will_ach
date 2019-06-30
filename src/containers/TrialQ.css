@@ -1,0 +1,40 @@
+.TrialQ {
+    background-color: #808080;
+    text-align: center;
+  }
+
+  .TrialQ-header {
+    background-color: #6b6b6b;
+    color: #6b6b6b;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+  }
+
+  .text-container{
+    min-height: 100vh;
+    display: flex;
+    align-items: top;
+  }
+
+  .TrialQ-text{
+    margin-top: 10%;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+  }
+
+  .bigger{
+    font-size: 150%;
+    font-weight: bold;
+  }
+
+  .Site-link {
+    height: 12%;
+    color: #61dafb;
+    position: absolute;
+    top: 2%;
+    left: 2%;
+  }

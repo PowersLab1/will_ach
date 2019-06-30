@@ -1,0 +1,40 @@
+  .Instructions {
+    text-align: center;
+  }
+  
+  .Instructions-header {
+    background-color: #003366;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .text-container{
+    min-height: 100vh;
+    display: flex;
+    align-items: top;
+  }
+  
+  .Instructions-text{
+    margin-top: 10%;
+    justify-content: center;
+    font-size: calc(10px + 2vmin); 
+  }
+  
+  .bigger{
+    font-size: 150%;
+    font-weight: bold;
+  }
+  
+  .Site-link {
+    height: 12%;
+    color: #61dafb;
+    position: absolute;
+    top: 2%;
+    left: 2%;
+  }
+  
