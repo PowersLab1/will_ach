@@ -1,9 +1,9 @@
-.TrialQ {
+.Trial_TT_3 {
     background-color: #808080;
     text-align: center;
   }
 
-  .TrialQ-header {
+  .Trial_TT_3-header {
     background-color: #6b6b6b;
     color: #6b6b6b;
     min-height: 100vh;
@@ -20,7 +20,7 @@
     align-items: top;
   }
 
-  .TrialQ-text{
+  .Trial_TT_3-text{
     margin-top: 10%;
     justify-content: center;
     font-size: calc(10px + 2vmin);

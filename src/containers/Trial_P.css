@@ -1,11 +1,11 @@
-.TrialQ {
+.Trial_P {
     background-color: #808080;
     text-align: center;
   }
 
-  .TrialQ-header {
-    background-color: #6b6b6b;
-    color: #6b6b6b;
+  .Trial_P-header {
+    background-color: #808080;
+    color: #808080;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@
     align-items: top;
   }
 
-  .TrialQ-text{
+  .Trial_P-text{
     margin-top: 10%;
     justify-content: center;
     font-size: calc(10px + 2vmin);

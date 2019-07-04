@@ -1,17 +1,16 @@
-.TrialQ {
-    background-color: #808080;
+  .Break1 {
     text-align: center;
   }
 
-  .TrialQ-header {
-    background-color: #6b6b6b;
-    color: #6b6b6b;
+  .Break1-header {
+    background-color: #003366;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
+    color: white;
   }
 
   .text-container{
@@ -20,7 +19,7 @@
     align-items: top;
   }
 
-  .TrialQ-text{
+  .Break1-text{
     margin-top: 10%;
     justify-content: center;
     font-size: calc(10px + 2vmin);

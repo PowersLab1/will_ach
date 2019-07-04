@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import './Instructions.css';
+import './Break1.css';
 import { Redirect } from "react-router-dom";
 
-class Instructions extends Component {
+class Break1 extends Component {
 
     constructor(props) {
         super(props);
@@ -31,22 +31,23 @@ class Instructions extends Component {
       render() {
 
         if(this.state.continue === true){
-          return <Redirect to="/Trial_P" />
+          return <Redirect to="/Trial_TT_2" />
         }
 
         return (
-          <div className="Instructions">
+          <div className="Break">
             <input type="hidden"/>
-            <header className="Instructions-header">
+            <header className="Break-header">
             <div className="text-container">
-              <p className="Instructions-text">
+              <p className="Break-text">
                 This is a vision test.
-                <br /><br /> A visual white noise will be shown throughout the experiment.
-                <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
+                <br /><br /> Great!!! Take a quick break. Three more to go!
+                <br /><br /> Remember: Continue to look carefully and do the best you can.
+                <br /><br /> The task will continue to be difficult, but it is okay to guess and it is okay to be uncertain.
                 <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
                 <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
                 <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
-                <br /><br /><br /> PRESS "Q"/YES TO BEGIN A SHORT PRACTICE SESSION
+                <br /><br /><br /> PRESS "Q"/YES TO CONTINUE WITH THE NEXT PART
 
               </p>
             </div>
@@ -56,4 +57,4 @@ class Instructions extends Component {
       }
     }
 
-export default Instructions;
+export default Break1;

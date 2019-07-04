@@ -21,9 +21,6 @@ class TrialQ extends Component {
       counter: 0,
       counter2: 0,
       change: false,
-      rating_img: false, 
-
-      rating_window: false,
 
       responses_q_1: [],
       contrast_array_q_1: [],
@@ -46,7 +43,7 @@ class TrialQ extends Component {
 
   create_noise(audioContext) {
 
-    var end = 5;
+    var end = 80;
     // var contrast_block = tt1;
     var index1 = 0;
     var index2 = 0;
@@ -107,7 +104,6 @@ class TrialQ extends Component {
         }
 
         if (index1 != index2) {
-          index2++;
           that.setState({             //current staircase is 2
             currentQ: 2,
           });
@@ -174,18 +170,9 @@ class TrialQ extends Component {
 
             seconds = new Date().getTime() / 1000
 
-            // if (that.state.time_window_start < seconds && that.state.time_window_start > seconds - 0.5) {
-            //   data[(x + y * 256) * 4 + 0] = 0;
-            //   data[(x + y * 256) * 4 + 1] = 0;
-            //   data[(x + y * 256) * 4 + 2] = 0;
-            //   data[(x + y * 256) * 4 + 3] = 0;
-            //   continue;
-            // }
-
-            if (that.state.time_window_start + 2.5 == seconds) {
+            if (that.state.time_window_start + 2 == seconds) {
               that.setState({
                 time_window: false,
-                rating_img: false, 
               });
 
               if (that.state.currentQ == 1) {
@@ -231,19 +218,13 @@ class TrialQ extends Component {
       t++;
       ctx.putImageData(imgdata, 0, 0);
 
-      img.src = "https://www.shareicon.net/data/256x256/2015/12/04/682310_cross_512x512.png";
+      img.src = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
       var recWidth = canvas.width / 8;
       var recHeight = canvas.height / 8;
 
-      if (that.state.time_window_start < seconds && that.state.time_window_start > seconds - 0.75) {
-        img.src = "https://ecdn.teacherspayteachers.com/thumbitem/Visual-Rating-Scale-1-5-2100331-1459950062/original-2100331-1.jpg"
-        recWidth = canvas.width /2;
-        recHeight = canvas.height/2;
-      }
-
       var xPos = (canvas.width / 2) - (recWidth / 2);
       var yPos = (canvas.height / 2) - (recHeight / 2);
-      
+
       ctx.fillStyle = "gray";
       ctx.fillRect(xPos, yPos, recWidth, recHeight);
       ctx.drawImage(img, xPos, yPos, recWidth, recHeight);

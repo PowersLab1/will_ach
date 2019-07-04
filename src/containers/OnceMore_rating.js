@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import './Instructions.css';
+import './OnceMore_rating.css';
 import { Redirect } from "react-router-dom";
 
-class Instructions extends Component {
+class OnceMore_rating extends Component {
 
     constructor(props) {
         super(props);
@@ -31,17 +31,16 @@ class Instructions extends Component {
       render() {
 
         if(this.state.continue === true){
-          return <Redirect to="/Trial_P" />
+          return <Redirect to="/Trial_P_rating" />
         }
 
         return (
-          <div className="Instructions">
+          <div className="OnceMore_rating">
             <input type="hidden"/>
-            <header className="Instructions-header">
+            <header className="OnceMore_rating-header">
             <div className="text-container">
-              <p className="Instructions-text">
-                This is a vision test.
-                <br /><br /> A visual white noise will be shown throughout the experiment.
+              <p className="OnceMore_rating-text">
+                <br /><br /> Good job! Now let's practice once more.
                 <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
                 <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
                 <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
@@ -56,4 +55,4 @@ class Instructions extends Component {
       }
     }
 
-export default Instructions;
+export default OnceMore_rating;
