@@ -14,6 +14,10 @@ export const add_response_P = ( item ) => ({
   type: 'ADD_RESPONSE_P',
   payload: item
 })
+export const add_response_P_rating = ( item ) => ({
+  type: 'ADD_RESPONSE_P_RATING',
+  payload: item
+})
 export const add_response_q_1 = ( item ) => ({
   type: 'ADD_RESPONSE_Q_1',
   payload: item
@@ -42,6 +46,10 @@ export const add_response_tt_4 = ( item ) => ({
 //response times
 export const add_response_time_P = ( item ) => ({
   type: 'ADD_RESPONSE_TIME_P',
+  payload: item
+})
+export const add_response_time_P_rating = ( item ) => ({
+  type: 'ADD_RESPONSE_TIME_P_RATING',
   payload: item
 })
 export const add_response_time_q_1 = ( item ) => ({
@@ -74,6 +82,10 @@ export const add_contrast_P = ( item ) => ({
   type: 'ADD_CONTRAST_P',
   payload: item
 })
+export const add_contrast_P_rating = ( item ) => ({
+  type: 'ADD_CONTRAST_P_RATING',
+  payload: item
+})
 export const add_contrast_q_1 = ( item ) => ({
   type: 'ADD_CONTRAST_Q_1',
   payload: item
@@ -102,6 +114,10 @@ export const add_contrast_tt_4 = ( item ) => ({
 //ratings
 export const add_rating_P = ( item ) => ({
   type: 'ADD_RATING_P',
+  payload: item
+})
+export const add_rating_P_rating = ( item ) => ({
+  type: 'ADD_RATING_P_RATING',
   payload: item
 })
 export const add_rating_q_1 = ( item ) => ({
