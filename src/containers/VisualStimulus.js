@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {createStim, createGabor} from "../Stim.js";
+import {createStim, createGabor} from "../lib/Stim.js";
 
 var _ = require('lodash');
 var SimplexNoise = require('simplex-noise');
 
 const IMG_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
+const RATINGS_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/rating_scale.png";
 
 class VisualStimulus extends Component {
   constructor(props) {
     super(props);
     this.showContrast = false;
+    this.showRatings = false;
     this.contrast = 0;
   }
 
@@ -63,17 +65,27 @@ class VisualStimulus extends Component {
 
       ctx.putImageData(imgdata, 0, 0);
 
-      var recWidth = canvas.width / 8;
-      var recHeight = canvas.height / 8;
+      const img = new Image();
+      let rectWidth, rectHeight;
 
-      var xPos = (canvas.width / 2) - (recWidth / 2);
-      var yPos = (canvas.height / 2) - (recHeight / 2);
-      var img = new Image();
-      img.src = IMG_SRC;
+      if (that.props.showRatings) {
+        img.src = RATINGS_SRC;
+        rectWidth = canvas.width;
+        rectHeight = canvas.height;
+        ctx.fillStyle = "white";
+      } else {
+        img.src = IMG_SRC;
+        rectWidth = canvas.width / 8;
+        rectHeight = canvas.height / 8;
+      }
+
       ctx.fillStyle = "gray";
 
-      ctx.fillRect(xPos, yPos, recWidth, recHeight);
-      ctx.drawImage(img, xPos, yPos, recWidth, recHeight);
+      var xPos = (canvas.width / 2) - (rectWidth / 2);
+      var yPos = (canvas.height / 2) - (rectHeight / 2);
+
+      ctx.fillRect(xPos, yPos, rectWidth, rectHeight);
+      ctx.drawImage(img, xPos, yPos, rectWidth, rectHeight);
 
       // Render next frame
       that.animationFrameId = window.requestAnimationFrame(nextFrame);
@@ -88,9 +100,12 @@ class VisualStimulus extends Component {
     this.startAnimation();
   }
 
-componentWillReceiveProps(props) {
-  console.log(props);
-}
+/*
+  componentWillReceiveProps(props) {
+    console.log(props);
+  }
+*/
+
   render() {
     return (
         <canvas id="c" width="256" height="256"
@@ -102,12 +117,14 @@ componentWillReceiveProps(props) {
 
 VisualStimulus.defaultProps = {
   showContrast: false,
+  showRatings: false,
   contrast: 0,
   precomputedGabor: undefined,
 }
 
 VisualStimulus.propTypes = {
   showContrast: PropTypes.bool.isRequired,
+  showRatings: PropTypes.bool,
   contast: PropTypes.number,
   precomputedGabor: PropTypes.array,
 }

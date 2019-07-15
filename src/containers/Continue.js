@@ -31,7 +31,6 @@ class Continue extends Component {
 
 
       render() {
-        console.log(this.props.data);
 
         if(this.state.continue === true){
       return <Redirect to="/Trial_P_rating" />

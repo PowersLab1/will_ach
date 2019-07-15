@@ -1,6 +1,17 @@
-import { sumVector, QuestPdf, QuestRecompute, QuestCreate, QuestMean, QuestSd, QuestQuantile, QuestUpdate, PAL_Gumbel, indexOfMax } from "./Quest.js"
+import {
+  sumVector,
+  QuestPdf,
+  QuestRecompute,
+  QuestCreate,
+  QuestMean,
+  QuestSd,
+  QuestQuantile,
+  QuestUpdate,
+  PAL_Gumbel,
+  indexOfMax
+} from "./Quest.js"
 
-export function test(){
+export function test() {
     const math = require('mathjs');
 
     var tGuess = 0.5,
@@ -13,9 +24,9 @@ export function test(){
       range = .05;
     var q1 = QuestCreate(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
-    //console.log(q1); 
+    //console.log(q1);
     var q2 = QuestCreate(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
-    q2.updatePdf = 1; 
+    q2.updatePdf = 1;
     q2 = QuestUpdate(q2, 0.5, 1);
     console.log(q2)
     var t1 = QuestMean(q1);		// Recommended by Pelli (1989) and King-Smith et al. (1994) as the best way to ascertain threshold.
@@ -60,11 +71,10 @@ export function process_data( q1, q2 ) {
 
     var intensities = gumbel_intensities(q1, q2, tmean, lambda, gamma);
 
-    return intensities; 
-  }
+    return intensities;
+}
 
-  export function gumbel_intensities(q1, q2, tmean, lambda, gamma){
-
+export function gumbel_intensities(q1, q2, tmean, lambda, gamma) {
     var returnStruct = {
         intensities: [],
         parameters: [],
@@ -77,12 +87,12 @@ export function process_data( q1, q2 ) {
 
     const math = require('mathjs');
 
-    var parameters = []; 
+    var parameters = [];
 
     parameters.push(ch_QuestBetaAnalysis(q1));
     parameters.push(ch_QuestBetaAnalysis(q2));
-    
-    returnStruct.parameters = parameters; 
+
+    returnStruct.parameters = parameters;
 
     var mean_beta = 3.5;  // changed 3/25/2019. Trying fixed beta at 3.5 (suggested generic beta value by Quest documentation) instead of individually estimating.
     var mean_alpha = tmean;
@@ -104,27 +114,26 @@ export function process_data( q1, q2 ) {
     intensities[1].push( parseFloat(fzero(fn90, 2).solution) );
     intensities.push(intensities[1]);
 
-    returnStruct.intensities = intensities; 
-    
+    returnStruct.intensities = intensities;
+
     return returnStruct;
   }
 
-export function ch_QuestBetaAnalysis( q ){
-    
+export function ch_QuestBetaAnalysis(q) {
     const math = require('mathjs');
 
     var q2 =  QuestCreate( q.tGuess, q.tGuessSd, q.pThreshold, math.eval("2^(1/4)"), q.delta, q.gamma, 0.02);
-    q2.dim = 250; 
-    
-    var qq = QuestRecompute( q2 ); 
-    var p = sumVector(qq.pdf); 
+    q2.dim = 250;
+
+    var qq = QuestRecompute( q2 );
+    var p = sumVector(qq.pdf);
 
 
     if( p == 0 ){
         throw new Error("Beta has zero probability, ", p);
     }
 
-    q2 = qq; 
+    q2 = qq;
 
     var t2 = QuestMean( q2 ); // estimate threshold for each possible beta
     var p2 = QuestPdf( q2, t2 ); // get probability of each of these (threshold,beta) combinations
@@ -133,10 +142,10 @@ export function ch_QuestBetaAnalysis( q ){
 
 
     var modeP = p2;
-    var t = t2; 
+    var t = t2;
     var sd = QuestSd(q2);
     var betaMean = math.sum(p2 * beta2) / modeP;
-    var betaSd = math.sqrt(math.sum(p2 * math.pow(beta2, 2)) / modeP - math.pow((math.sum(p2 * beta2)/ modeP), 2)); 
+    var betaSd = math.sqrt(math.sum(p2 * math.pow(beta2, 2)) / modeP - math.pow((math.sum(p2 * beta2)/ modeP), 2));
 
     var iBetaMean = math.sum( p2 / beta2) / modeP;
     var iBetaSd = math.sqrt(math.sum(p2 / math.pow(beta2, 2)) / modeP - math.pow((math.sum(p2/beta2) / modeP), 2));
@@ -144,9 +153,9 @@ export function ch_QuestBetaAnalysis( q ){
 
     var returnStruct = {
         t: t,
-        sd: sd, 
-        betaEstimate: betaEstimate, 
-        iBetaSd: iBetaSd, 
+        sd: sd,
+        betaEstimate: betaEstimate,
+        iBetaSd: iBetaSd,
     }
 
     return returnStruct

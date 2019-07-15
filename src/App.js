@@ -4,8 +4,8 @@ import Routes from "./Routes";
 
 class App extends Component {
 
-  render() {
 
+  render() {
     return (
       <div>
         <Routes />

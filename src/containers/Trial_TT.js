@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './Trial.css';
 import { Redirect } from "react-router-dom";
-import { createStim, createGabor } from "../Stim.js"
-import {create_blocks} from "../tt_blocks.js"
+import { createStim, createGabor } from "../lib/Stim.js"
+import {create_blocks} from "../lib/tt_blocks.js"
 
 import { connect } from 'react-redux'
 import { add_array, add_response_1, add_response_time_1, add_contrast_1 } from '../actions/data'
