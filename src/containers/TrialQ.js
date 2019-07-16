@@ -19,7 +19,7 @@ class TrialQ extends Component {
       contrasts: [],
     };
 
-    //initializing QUEST
+    // initializing QUEST
     let tGuess = 0.5,
       tGuessSd = 0.1,
       pThreshold = 0.75,
@@ -34,7 +34,7 @@ class TrialQ extends Component {
     this.q2 = QuestCreate(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = 19;
+    this.maxIndex = 39;
 
     // Set initial state
     this.state = {
@@ -95,7 +95,7 @@ class TrialQ extends Component {
     const data = getProcessedData();
 
     // Also, generate TT blocks singleton here for later use.
-    const intensities = this.props.data.trial1Struct.intensities[1];
+    const intensities = data.intensities[1];
     const c25 = intensities[0];
     const c50 = intensities[1];
     const c75 = intensities[2];

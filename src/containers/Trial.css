@@ -1,7 +1,7 @@
 .Trial {
     text-align: center;
   }
-  
+
   .Trial-header {
     background-color: #808080;
     min-height: 100vh;
@@ -12,24 +12,26 @@
     font-size: calc(10px + 2vmin);
     color: white;
   }
-  
+
   .text-container{
     min-height: 100vh;
     display: flex;
     align-items: top;
   }
-  
+
   .Trial-text{
     margin-top: 10%;
     justify-content: center;
-    font-size: calc(10px + 2vmin); 
+    margin-left: auto;
+    margin-right: auto;
+    font-size: calc(20px + 2vmin);
   }
-  
+
   .bigger{
     font-size: 150%;
     font-weight: bold;
   }
-  
+
   .Site-link {
     height: 12%;
     color: #61dafb;
@@ -37,4 +39,3 @@
     top: 2%;
     left: 2%;
   }
-  

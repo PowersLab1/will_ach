@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import './Trial_P.css';
+import './Trial.css';
 import {Redirect} from "react-router-dom";
 import {beep} from "../lib/utils";
 import {createStim, createGabor} from "../lib/Stim.js";
@@ -21,7 +21,7 @@ const KEY_CODE_TO_RATING = {
   52: 4,
   53: 5,
 };
-// We want key codes in number form, hence the parseInte
+// We want key codes in number form, hence the parseInt
 const RATING_KEY_CODES = _.map(
   _.keys(KEY_CODE_TO_RATING),
   (k) => parseInt(k, 10)
@@ -46,12 +46,12 @@ class Trial extends Component {
       contrast: 0,
       responseWindow: false,
       ratingWindow: false,
+      trialStarted: false,
     };
 
     // class props init
     this.canvasRef = React.createRef();
     this.audioContext = new AudioContext();
-    // this.animationFrameId = 0; // used to cancel last frame (not sure if needed)
     this.initialDelay = 2000; // time until first stimulus, in ms
     this.delay = 3000; // time in between stimuli, in ms
     this.numAttempts = 0;
@@ -65,7 +65,7 @@ class Trial extends Component {
     // time keeping
     this.startTime = 0;
 
-    // Precompute gabor layers for performance'
+    // Precompute gabor layers for performance
     // Specifically, we don't want our animation to pause while
     // trying to compute the gabor layer, which is an expensive operation.
     // So we instead compute them all in the beginning and then use them later.
@@ -75,7 +75,9 @@ class Trial extends Component {
   precomputeGabors() {
     var stim = createStim();
     for (let i = 0; i < this.props.contrasts.length; i++) {
-      this.precomputedGabors.push(createGabor(stim, this.props.contrasts[i]));
+      if (_.isUndefined(this.precomputedGabors[i])) {
+        this.precomputedGabors[i] = createGabor(stim, this.props.contrasts[i]);
+      }
     }
   }
 
@@ -102,6 +104,8 @@ class Trial extends Component {
   }
 
   startTrial() {
+    this.setState({trialStarted: true});
+
     var that = this;
     function playStimulus() {
       that.log_debug();
@@ -145,7 +149,6 @@ class Trial extends Component {
   }
 
   shutdown() {
-    // window.cancelAnimationFrame(this.animationFrameId); // do we need this?
     this.saveDataToStore();
     this.audioContext.close();
     this.setState({ complete: true });
@@ -153,7 +156,7 @@ class Trial extends Component {
 
   saveDataToStore() {
     this.props.dataHandler(
-      this.contrasts,
+      this.props.contrasts,
       this.response,
       this.responseTime,
       this.ratings
@@ -169,17 +172,22 @@ class Trial extends Component {
   componentDidMount() {
     document.addEventListener("keydown", this.keyFunction, false);
     if (this.state.complete == false) {
-      this.precomputeGabors();
-      this.startTrial(this.audioContext);
+      // Oddly enough, we don't see the initial render unless
+      // this is scheduled this way.
+      setTimeout(() => {
+        this.precomputeGabors();
+        this.startTrial();
+      }, 0);
     }
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.keyFunction, false);
+    this.audioContext.close();
   }
 
   render() {
-    // If trial is complete, then we used the renderer passed in as a prop.
+    // If trial is complete, then we use the renderer passed in as a prop.
     // This renderer should take care of the redirect logic.
     if (this.state.complete) {
       return this.props.trialCompleteRenderer(this.props.contrasts, this.response);
@@ -187,15 +195,18 @@ class Trial extends Component {
 
     return (
       <div className="Trial">
-        <input type="hidden"/>
-        <header className="Trial-header">
-            <VisualStimulus
-              showContrast={this.state.showContrast}
-              showRatings={this.state.ratingWindow}
-              contrast={this.state.contrast}
-              precomputedGabor={this.precomputedGabors[this.state.index]}
-            />
-        </header>
+        {this.state.trialStarted ? (
+          <VisualStimulus
+            showContrast={this.state.showContrast}
+            showRatings={this.state.ratingWindow}
+            contrast={this.state.contrast}
+            precomputedGabor={this.precomputedGabors[this.state.index]}
+          />
+        ) : (
+          <p className="Trial-text">
+            Loading...
+          </p>
+        )}
       </div>
     );
   } // end render
@@ -226,6 +237,10 @@ class Trial extends Component {
       } else {
         // Otherwise, move on to the next index
         this.setState({index: this.state.index + 1});
+
+        // Not ideal about we might have to compute these on the fly,
+        // as is the case with the Quest trial.
+        this.precomputeGabors();
       }
     } else if (this.state.ratingWindow && _.includes(RATING_KEY_CODES, event.keyCode)) {
       this.ratings.push(KEY_CODE_TO_RATING[event.keyCode]);
@@ -233,6 +248,7 @@ class Trial extends Component {
         index: this.state.index + 1,
         ratingWindow: false,
       });
+      this.precomputeGabors();
     }
   }
 
@@ -249,7 +265,6 @@ class Trial extends Component {
     console.log('store: ' + JSON.stringify(getStore()));
 
     console.log('================================\n');
-
   }
 } // end class
 
