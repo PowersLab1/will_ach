@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import './Trial.css';
-import {Redirect} from "react-router-dom";
 import {beep} from "../lib/utils";
 import {createStim, createGabor} from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
@@ -150,7 +149,6 @@ class Trial extends Component {
 
   shutdown() {
     this.saveDataToStore();
-    this.audioContext.close();
     this.setState({ complete: true });
   }
 
@@ -238,7 +236,7 @@ class Trial extends Component {
         // Otherwise, move on to the next index
         this.setState({index: this.state.index + 1});
 
-        // Not ideal about we might have to compute these on the fly,
+        // Not ideal but we might have to compute these on the fly,
         // as is the case with the Quest trial.
         this.precomputeGabors();
       }

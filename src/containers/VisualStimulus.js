@@ -44,7 +44,7 @@ class VisualStimulus extends Component {
               }
             }
 
-            var r = simplex.noise3D(x / 8, y / 8, t / 8) * 0.4 + 0.35;
+            const r = simplex.noise3D(x / 8, y / 8, t / 8) * 0.4 + 0.35;
             data[(x + y * 256) * 4 + 0] = stim.alpha * stimulus[(x + y * 256) * 4 + 0] + (1 - stim.alpha) * r * 250;
             data[(x + y * 256) * 4 + 1] = stim.alpha * stimulus[(x + y * 256) * 4 + 1] + (1 - stim.alpha) * r * 250;
             data[(x + y * 256) * 4 + 2] = stim.alpha * stimulus[(x + y * 256) * 4 + 2] + (1 - stim.alpha) * r * 250;
@@ -54,7 +54,7 @@ class VisualStimulus extends Component {
             // and convenient so we do it here.
             stimulus = undefined;
 
-            var r = simplex.noise3D(x / 8, y / 8, t / 8) * 0.4 + 0.35;
+            const r = simplex.noise3D(x / 8, y / 8, t / 8) * 0.4 + 0.35;
             data[(x + y * 256) * 4 + 0] = stim.alpha * stimulus_blank[(x + y * 256) * 4 + 0] + (1 - stim.alpha) * r * 250;
             data[(x + y * 256) * 4 + 1] = stim.alpha * stimulus_blank[(x + y * 256) * 4 + 1] + (1 - stim.alpha) * r * 250;
             data[(x + y * 256) * 4 + 2] = stim.alpha * stimulus_blank[(x + y * 256) * 4 + 2] + (1 - stim.alpha) * r * 250;

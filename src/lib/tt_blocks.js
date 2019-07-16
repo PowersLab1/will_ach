@@ -6,7 +6,7 @@ export function create_blocks(c25, c50, c75) {
   // where the number of each values is passed in as an arg.
   function create_block(num_zero, num_c25, num_c50, num_c75) {
     return _.flatten([
-      _.fill(Array(num_zero, 0)),
+      _.fill(Array(num_zero), 0),
       _.fill(Array(num_c25), c25),
       _.fill(Array(num_c50), c50),
       _.fill(Array(num_c75), c75)

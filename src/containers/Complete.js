@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Complete.css';
-import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom";
 
 class Complete extends Component {
@@ -30,10 +29,8 @@ class Complete extends Component {
   }
 
 
-      render() {
-        console.log(this.props.data);
-
-        if(this.state.continue === true){
+  render() {
+    if(this.state.continue === true){
       return <Redirect to="/Trial_TT_1" />
     }
 
@@ -61,11 +58,8 @@ class Complete extends Component {
       }
     }
 
-const mapStateToProps = state => ({
-  data: state.data,
-})
 
-export default connect(mapStateToProps)(Complete)
+export default Complete;
 
 
 // var axios = require('axios')

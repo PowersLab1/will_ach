@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Continue.css';
-import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom";
 
 class Continue extends Component {
@@ -61,8 +60,4 @@ class Continue extends Component {
       }
     }
 
-const mapStateToProps = state => ({
-  data: state.data,
-})
-
-export default connect(mapStateToProps)(Continue)
+export default Continue;

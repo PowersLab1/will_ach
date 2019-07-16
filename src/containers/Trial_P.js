@@ -15,7 +15,7 @@ class Trial_P extends Component {
     for (let i = 0; i < response.length; i++) {
       correct += response[i] == (contrasts[i] > 0);
     }
-
+    
     if (correct > 0.7 * contrasts.length) {
       return <Redirect to="/Continue" />
     } else {

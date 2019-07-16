@@ -4,7 +4,7 @@ import './TrialQ.css';
 import { Redirect } from "react-router-dom";
 import Trial from './Trial';
 
-import { QuestCreate, QuestUpdate, QuestQuantile} from "../lib/Quest.js"
+import Quest from "../lib/Quest.js";
 import {create_blocks_singleton} from '../lib/tt_blocks';
 import {setQuestData, processAndStoreData, getProcessedData} from '../store';
 
@@ -27,14 +27,14 @@ class TrialQ extends Component {
       delta = 0.01,
       gamma = 0.01,
       grain = 0.001,
-      dim = 1000,
+      dim = 1000, // Never used? what??
       range = 20;
 
-    this.q1 = QuestCreate(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
-    this.q2 = QuestCreate(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q1 = new Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q2 = new Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = 39;
+    this.maxIndex = 39; // Inclusive
 
     // Set initial state
     this.state = {
@@ -56,12 +56,12 @@ class TrialQ extends Component {
       return;
     }
 
-    if (this.index % 2 == 0) {
-      this.q1 = QuestUpdate(this.q1, this.state.contrasts[this.index], response);
-      this.pushContrast(QuestQuantile(this.q1));
+    if (this.index % 2 === 0) {
+      this.q1.update(this.state.contrasts[this.index], response);
+      this.pushContrast(this.q1.quantile());
     } else {
-      this.q2 = QuestUpdate(this.q2, this.state.contrasts[this.index], response);
-      this.pushContrast(QuestQuantile(this.q2));
+      this.q2.update(this.state.contrasts[this.index], response);
+      this.pushContrast(this.q2.quantile());
     }
     this.index++;
   }
@@ -72,13 +72,13 @@ class TrialQ extends Component {
 
   dataHandler = (contrasts, response, responseTime, ratings) => {
     // Even indices are for staircase 1, odd for staircase 2
-    const contrasts_q1 = contrasts.filter((_, i) => i % 2 == 0);
-    const response_q1 = response.filter((_, i) => i % 2 == 0);
-    const responseTime_q1 = responseTime.filter((_, i) => i % 2 == 0);
+    const contrasts_q1 = contrasts.filter((_, i) => i % 2 === 0);
+    const response_q1 = response.filter((_, i) => i % 2 === 0);
+    const responseTime_q1 = responseTime.filter((_, i) => i % 2 === 0);
 
-    const contrasts_q2 = contrasts.filter((_, i) => i % 2 == 1);
-    const response_q2 = response.filter((_, i) => i % 2 == 1);
-    const responseTime_q2 = responseTime.filter((_, i) => i % 2 == 1);
+    const contrasts_q2 = contrasts.filter((_, i) => i % 2 === 1);
+    const response_q2 = response.filter((_, i) => i % 2 === 1);
+    const responseTime_q2 = responseTime.filter((_, i) => i % 2 === 1);
 
     // Save staircase data
     setQuestData(
@@ -95,10 +95,9 @@ class TrialQ extends Component {
     const data = getProcessedData();
 
     // Also, generate TT blocks singleton here for later use.
-    const intensities = data.intensities[1];
-    const c25 = intensities[0];
-    const c50 = intensities[1];
-    const c75 = intensities[2];
+    const c25 = data.intensities.c25;
+    const c50 = data.intensities.c50;
+    const c75 = data.intensities.c75;
 
     create_blocks_singleton(c25, c50, c75);
   }

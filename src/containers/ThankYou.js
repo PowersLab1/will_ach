@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import logo from "../media/psych_logo.jpg"
 import './ThankYou.css';
-import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom";
 
 class ThankYou extends Component {
@@ -62,8 +61,4 @@ class ThankYou extends Component {
       }
     }
 
-const mapStateToProps = state => ({
-  data: state.data,
-})
-
-export default connect(mapStateToProps)(ThankYou)
+export default ThankYou;

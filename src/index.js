@@ -3,19 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { HashRouter as Router } from "react-router-dom";
+import { createBrowserHistory } from 'history';
 
-import { createStore, combineReducers } from 'redux'
-import { Provider } from 'react-redux'
-import configureStore, { history } from './configureStore'
-
-
-const store = configureStore( { history } );
+export const history = createBrowserHistory();
 
 ReactDOM.render(
-	<Provider store={store}>
-	    <Router history={history} basename={process.env.PUBLIC_URL}>
-	      <App />
-	    </Router>
-	</Provider>, 
+    <Router history={history} basename={process.env.PUBLIC_URL}>
+      <App />
+    </Router>,
     document.getElementById("root")
-  );
+);

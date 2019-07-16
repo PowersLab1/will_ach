@@ -3,10 +3,6 @@ import logo from "../media/psych_logo.jpg"
 import './Welcome.css';
 import { Redirect } from "react-router-dom";
 
-import { connect } from 'react-redux'
-import { add_array, add_response_1 } from '../actions/data'
-
-
 class Welcome extends Component {
 
   constructor(props) {
@@ -68,14 +64,4 @@ class Welcome extends Component {
   }
 }
 
-
-const mapStateToProps = state => ({
-  data: state.data,
-})
-
-const mapDispatchToProps = dispatch => ({
-  add_response_1: ( elem ) => dispatch(add_response_1( elem )),
-  add_array: ( arr ) => dispatch(add_array( arr )),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome)
+export default Welcome;
