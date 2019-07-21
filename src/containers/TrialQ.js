@@ -34,7 +34,7 @@ class TrialQ extends Component {
     this.q2 = new Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = 39; // Inclusive
+    this.maxIndex = 1; // Inclusive
 
     // Set initial state
     this.state = {

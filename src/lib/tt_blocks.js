@@ -13,6 +13,7 @@ export function create_blocks(c25, c50, c75) {
     ]);
   }
 
+/*
   var blocks = [
     create_block(2, 1, 1, 26),
     create_block(8, 4, 4, 14),
@@ -26,7 +27,25 @@ export function create_blocks(c25, c50, c75) {
     create_block(14, 7, 7, 2),
     create_block(14, 7, 7, 2),
     create_block(14, 7, 7, 2)
+];
+*/
+ // For testing, to be deleted eventually
+
+  var blocks = [
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
+    create_block(1,0,0,0),
   ];
+
 
   // Finally, shuffle each block before returning
   return _.map(blocks, (block) => _.shuffle(block));

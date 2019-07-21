@@ -19,11 +19,12 @@ import Break1 from "./containers/Break1";
 import Break2 from "./containers/Break2";
 import Break3 from "./containers/Break3";
 import ThankYou from "./containers/ThankYou";
+import Error from "./containers/Error";
 
 
 export default () =>
   <Switch>
-      <Route path="/" exact component={Welcome} />
+    <Route path="/" exact component={Welcome} />
     <Route path="/Welcome" exact component={Welcome} />
     <Route path="/Instructions" exact component={Instructions} />
     <Route path="/Trial_P" exact component={Trial_P} />
@@ -42,6 +43,8 @@ export default () =>
     <Route path="/Break3" exact component={Break3} />
     <Route path="/Trial_TT_4" exact component={Trial_TT_4} />
     <Route path="/ThankYou" exact component={ThankYou} />
+    <Route path="/Error" exact component={Error} />
+
         { /* Finally, catch all unmatched routes */ }
     <Route component={NotFound} />
   </Switch>;

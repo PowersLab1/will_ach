@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-import './Trial_TT_1.css';
 import {Redirect} from "react-router-dom";
 import Trial from './Trial';
 
@@ -26,8 +25,8 @@ class Trial_TT_4 extends Component {
   }
 
   trialCompleteRenderer = (contrasts, response) => {
-    alert("Trial completed")
-    return <Redirect to="/Complete" />
+    alert("Trial completed");
+    return <Redirect to="/ThankYou" />
   }
 
   dataHandler = (contrasts, response, responseTime, ratings) => {
@@ -42,9 +41,8 @@ class Trial_TT_4 extends Component {
 
   render() {
     // Something went wrong and we don't have contrast values from Quest.
-    // Redirect to the beginning.
     if (_.isEmpty(this.state.contrasts)) {
-      return <Redirect to="/Welcome" />
+      return <Redirect to="/Error" />
     }
 
     return (

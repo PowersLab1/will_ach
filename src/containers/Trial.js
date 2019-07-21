@@ -5,8 +5,9 @@ import './Trial.css';
 import {beep} from "../lib/utils";
 import {createStim, createGabor} from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
+import {Redirect} from "react-router-dom";
 
-import {getStore} from '../store';
+import {getStore, getEncryptedId, getDataSent} from '../store';
 
 
 var _ = require('lodash');
@@ -40,12 +41,14 @@ class Trial extends Component {
     // set initial states
     this.state = {
       index: 0,
-      complete: false,
       showContrast: false,
       contrast: 0,
       responseWindow: false,
       ratingWindow: false,
       trialStarted: false,
+      complete: false,
+      invalid: false,
+      dataSent: getDataSent(),
     };
 
     // class props init
@@ -86,7 +89,7 @@ class Trial extends Component {
    *                              *
    ********************************/
 
-  play_visual_stimulus(contrast, ms) {
+  playVisualStimulus(contrast, ms) {
     this.setState({
       showContrast: true,
       contrast: contrast,
@@ -98,7 +101,7 @@ class Trial extends Component {
     }, ms);
   }
 
-  play_auditory_stimulus(amp, ms) {
+  playAuditoryStimulus(amp, ms) {
     beep(amp /* amp */, 830 /* freq */, ms /* ms */, this.audioContext);
   }
 
@@ -135,8 +138,8 @@ class Trial extends Component {
 
       // Play stimuli
       const contrast = that.props.contrasts[that.state.index];
-      that.play_auditory_stimulus(50, STIMULUS_MS);
-      that.play_visual_stimulus(contrast, STIMULUS_MS);
+      that.playAuditoryStimulus(50, STIMULUS_MS);
+      that.playVisualStimulus(contrast, STIMULUS_MS);
 
       setTimeout(playStimulus, that.delay + that.jitter());
     }
@@ -149,7 +152,7 @@ class Trial extends Component {
 
   shutdown() {
     this.saveDataToStore();
-    this.setState({ complete: true });
+    this.setState({complete: true});
   }
 
   saveDataToStore() {
@@ -169,7 +172,13 @@ class Trial extends Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.keyFunction, false);
-    if (this.state.complete == false) {
+
+    // If we don't have an id on file, then abort
+    if (_.isUndefined(getEncryptedId())) {
+      this.setState({invalid: true});
+    }
+
+    if (this.state.complete === false) {
       // Oddly enough, we don't see the initial render unless
       // this is scheduled this way.
       setTimeout(() => {
@@ -185,11 +194,20 @@ class Trial extends Component {
   }
 
   render() {
-    // If trial is complete, then we use the renderer passed in as a prop.
-    // This renderer should take care of the redirect logic.
-    if (this.state.complete) {
+    // Something went wrong, so we redirect to error page.
+    if (this.state.invalid) {
+      return <Redirect to="/Error" />
+    } else if (this.state.dataSent) {
+      // If we already sent out data, we're done.
+      return <Redirect to="/ThankYou" />
+    } else if (this.state.complete) {
+      // If trial is complete, then we use the renderer passed in as a prop.
+      // This renderer should take care of the redirect logic.
+
       return this.props.trialCompleteRenderer(this.props.contrasts, this.response);
     }
+
+
 
     return (
       <div className="Trial">
@@ -261,14 +279,15 @@ class Trial extends Component {
     console.log('index: ' + this.state.index);
     console.log('numAttempts: ' + this.numAttempts);
     console.log('store: ' + JSON.stringify(getStore()));
-
+    console.log('sessionStorage: ' + JSON.stringify(sessionStorage));
     console.log('================================\n');
   }
 } // end class
 
 
 Trial.defaultProps = {
-  contrasts: _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
+  // contrasts: _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
+  contrasts: _.shuffle([0]),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
   responseHandler: _.noop,

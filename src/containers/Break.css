@@ -1,17 +1,16 @@
-.Trial_TT_3 {
-    background-color: #808080;
+  .Break {
     text-align: center;
   }
 
-  .Trial_TT_3-header {
-    background-color: #6b6b6b;
-    color: #6b6b6b;
+  .Break-header {
+    background-color: #003366;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
+    color: white;
   }
 
   .text-container{
@@ -20,7 +19,7 @@
     align-items: top;
   }
 
-  .Trial_TT_3-text{
+  .Break-text{
     margin-top: 10%;
     justify-content: center;
     font-size: calc(10px + 2vmin);

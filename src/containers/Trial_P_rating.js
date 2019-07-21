@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 
-import './Trial_P_rating.css';
 import {Redirect} from "react-router-dom";
 import Trial from './Trial';
 

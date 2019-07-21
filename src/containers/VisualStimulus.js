@@ -14,6 +14,7 @@ class VisualStimulus extends Component {
     this.showContrast = false;
     this.showRatings = false;
     this.contrast = 0;
+    this.animationFrameId = undefined;
   }
 
   startAnimation() {
@@ -100,6 +101,9 @@ class VisualStimulus extends Component {
     this.startAnimation();
   }
 
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.animationFrameId);
+  }
 /*
   componentWillReceiveProps(props) {
     console.log(props);

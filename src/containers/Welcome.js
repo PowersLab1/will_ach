@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import logo from "../media/psych_logo.jpg"
 import './Welcome.css';
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
+import {setEncryptedId, getEncryptedId, getDataSent} from '../store';
+
+var qs = require('query-string');
+var _ = require('lodash');
 
 class Welcome extends Component {
-
   constructor(props) {
     super(props);
     this.keyFunction = this.keyFunction.bind(this);
     this.state = {
       continue: false,
+      invalid: false,
+      dataSent: false,
     }
   }
 
@@ -24,14 +29,44 @@ class Welcome extends Component {
 
   componentDidMount(){
     document.addEventListener("keydown", this.keyFunction, false);
+
+    // Check if we're given an encrypted id
+    const params = qs.parse(
+      this.props.location.search,
+      {ignoreQueryPrefix: true}
+    );
+
+    // Update encrypted id
+    if (_.isUndefined(params.id)) {
+      // If no id is passed in as a param AND we don't
+      // have an id saved in our store, then we can't proceed.
+      // Show error page.
+      if (_.isUndefined(getEncryptedId())) {
+        this.setState({invalid: true});
+      }
+    } else {
+      // If an id is passed in as a param, then we set it.
+      setEncryptedId(params.id);
+    }
+
+    // After we update the id and data is still "sent",
+    // then redirect.
+    if (getDataSent()) {
+      this.setState({dataSent: true});
+    }
   }
   componentWillUnmount(){
     document.removeEventListener("keydown", this.keyFunction, false);
   }
 
   render() {
-
-    if(this.state.continue === true){
+    console.log(this.state);
+    if (this.state.invalid) {
+      return <Redirect to="/Error" />
+    } else if (this.state.dataSent) {
+      // If we already sent out data, we're done.
+      return <Redirect to="/ThankYou" />
+    } else if (this.state.continue === true){
       return <Redirect to="/Instructions" />
     }
 
