@@ -1,19 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {createStim, createGabor} from "../lib/Stim.js";
+import RATINGS_SRC from "../media/rating_scale.png";
+import RATINGS_1_SRC from "../media/rating_1.png";
+import RATINGS_2_SRC from "../media/rating_2.png";
+import RATINGS_3_SRC from "../media/rating_3.png";
+import RATINGS_4_SRC from "../media/rating_4.png";
+import RATINGS_5_SRC from "../media/rating_5.png";
 
 var _ = require('lodash');
 var SimplexNoise = require('simplex-noise');
 
 const IMG_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
-const RATINGS_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/rating_scale.png";
 
 class VisualStimulus extends Component {
   constructor(props) {
     super(props);
-    this.showContrast = false;
-    this.showRatings = false;
-    this.contrast = 0;
     this.animationFrameId = undefined;
   }
 
@@ -67,19 +69,9 @@ class VisualStimulus extends Component {
       ctx.putImageData(imgdata, 0, 0);
 
       const img = new Image();
-      let rectWidth, rectHeight;
-
-      if (that.props.showRatings) {
-        img.src = RATINGS_SRC;
-        rectWidth = canvas.width;
-        rectHeight = canvas.height;
-        ctx.fillStyle = "white";
-      } else {
-        img.src = IMG_SRC;
-        rectWidth = canvas.width / 8;
-        rectHeight = canvas.height / 8;
-      }
-
+      img.src = IMG_SRC;
+      const rectWidth = canvas.width / 8;
+      const rectHeight = canvas.height / 8;
       ctx.fillStyle = "gray";
 
       var xPos = (canvas.width / 2) - (rectWidth / 2);
@@ -111,9 +103,33 @@ class VisualStimulus extends Component {
 */
 
   render() {
+
     return (
+      <div>
+        <img src={RATINGS_SRC} width="256" height="256" style={
+          {
+            zIndex: 10,
+            position: "relative",
+            width: '50%',
+            height: '50%',
+            marginTop: '12vw',
+            backgroundColor: "#F8F8F8",
+            visibility: this.props.showRatings ? 'visible' : 'hidden',
+          }
+         }
+        />
         <canvas id="c" width="256" height="256"
-          style={{ zIndex:"0", position: "fixed", left: "25%",width: '50%', height:'auto'}}></canvas>
+          style={
+            {
+              zIndex:1,
+              position: "fixed",
+              left: "25%",
+              width: '50%',
+              height:'auto',
+            }
+          }></canvas>
+
+      </div>
     );
   } // end render
 } // end class

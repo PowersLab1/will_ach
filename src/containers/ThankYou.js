@@ -44,6 +44,7 @@ class ThankYou extends Component {
 
     // If we already sent data, nothing to do.
     if (getDataSent()) {
+      this.setState({loading: false});
       return;
     }
 

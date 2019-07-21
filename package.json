@@ -39,7 +39,7 @@
     "build": "react-scripts build",
     "test": "mocha --require @babel/register src/test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && rimraf build/**/*.map",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
