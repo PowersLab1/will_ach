@@ -212,12 +212,21 @@ class Trial extends Component {
     return (
       <div className="Trial">
         {this.state.trialStarted ? (
-          <VisualStimulus
-            showContrast={this.state.showContrast}
-            showRatings={this.state.ratingWindow}
-            contrast={this.state.contrast}
-            precomputedGabor={this.precomputedGabors[this.state.index]}
-          />
+          <div>
+            <VisualStimulus
+              showContrast={this.state.showContrast}
+              showRatings={this.state.ratingWindow}
+              contrast={this.state.contrast}
+              precomputedGabor={this.precomputedGabors[this.state.index]}
+            />
+            <p className="Trial-progress">
+              {this.state.index == this.props.contrasts.length ? (
+                <span>Complete. Please wait...</span>
+              ) : (
+                <span>#{this.state.index + 1}</span>
+              )}
+            </p>
+          </div>
         ) : (
           <p className="Trial-text">
             Loading...

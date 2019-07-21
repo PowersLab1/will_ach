@@ -25,7 +25,6 @@ class Trial_TT_2 extends Component {
   }
 
   trialCompleteRenderer = (contrasts, response) => {
-    alert("Trial completed")
     return <Redirect to="/Break2" />
   }
 
