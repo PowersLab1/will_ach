@@ -1,5 +1,6 @@
 import Quest from "./Quest.js"
 import {isArray} from 'util';
+var assert = require('assert');
 
 const _ = require('lodash');
 const math = require('mathjs');
@@ -63,45 +64,75 @@ export function gumbel_intensities(q1, q2, tmean, lambda, gamma) {
 }
 
 export function ch_QuestBetaAnalysis(q) {
-  var q2 =  new Quest(
-    q.params.tGuess,
-    q.params.tGuessSd,
-    q.params.pThreshold,
-    Math.pow(2, 1/4),
-    q.params.delta,
-    q.params.gamma,
-    0.02 // grain
-  );
-  q2.params.dim = 250;
-  q2.recompute();
-
-  // Sanity check
-  if (_.sum(q2.params.pdf) == 0) {
-    throw new Error("Beta has zero probability");
+  let qq = [];
+  for (let i = 1; i <= 16; i++) {
+    const q2 = _.cloneDeep(q);
+    // Norming should be done across all pdfs;
+    // to simplify, we skip norming.
+    q2.params.normalizePdf = 0;
+    q2.params.beta = Math.pow(2, i/4);
+    q2.params.dim = 250;
+    q2.params.grain = 0.02;
+    q2.recompute();
+    qq.push(q2);
   }
 
-  var t2 = q2.mean(); // estimate threshold for each possible beta
-  var p2 = q2.pdf(t2); // get probability of each of these (threshold,beta) combinations
-  var beta2 = q2.params.beta;
+  //console.log(JSON.stringify(qq[0]));
+  // Omit betas that have zero probability
+  qq = _.filter(qq, (q) => _.sum(q.params.pdf) !== 0);
 
-  var modeP = p2;
-  var t = t2;
-  // Below values are never used?
-//  var betaMean = math.sum(p2 * beta2) / modeP;
-//  var betaSd = math.sqrt(math.sum(p2 * math.pow(beta2, 2)) / modeP - math.pow((math.sum(p2 * beta2)/ modeP), 2));
+  // Get most probable combination
+  let maxP = qq[0].pdf(qq[0].mean()), index = 0;
+  const allP = [maxP];
+  const allBeta = [qq[0].params.beta];
+  const allT = [qq[0].mean()];
+  for (let i = 1; i < qq.length; i++) {
+    const p2 = qq[i].pdf(qq[i].mean());
+    allP.push(p2);
+    allBeta.push(qq[i].params.beta);
+    allT.push(qq[i].mean());
 
-  var iBetaMean = math.sum(p2 / beta2) / modeP;
-  var iBetaSd = math.sqrt(math.sum(p2 / math.pow(beta2, 2)) / modeP - math.pow((math.sum(p2/beta2) / modeP), 2));
-  var betaEstimate = 1 / iBetaMean;
+    if (p2 > maxP) {
+      maxP = p2;
+      index = i;
+    }
+  }
 
-  var returnStruct = {
+  const probableQ = qq[index];
+//  assert.equal(allBeta[index], 1);
+  const sd = probableQ.sd();
+  const p = _.sum(allP);
+  const t = probableQ.mean();
+
+  const multVector = _.map(
+    _.range(allP.length), (i) => allP[i] * allBeta[i]
+  );
+  const multVectorBetaSqured = _.map(
+    _.range(allP.length), (i) => allP[i] * Math.pow(allBeta[i],2)
+  );
+  const betaMean = _.sum(multVector) / p;
+  const betaSd = math.sqrt(_.sum(multVectorBetaSqured)/p - Math.pow(_.sum(multVector)/p,2));
+
+  const divVector = _.map(
+    _.range(allP.length), (i) => allP[i] / allBeta[i]
+  );
+  const divVectorBetaSquared = _.map(
+    _.range(allP.length), (i) => allP[i] / Math.pow(allBeta[i],2)
+  );
+  const iBetaMean = _.sum(divVector) / p;
+  const iBetaSd = math.sqrt(_.sum(divVectorBetaSquared)/p - Math.pow(_.sum(divVector)/p,2));
+
+  const betaEstimate = 1 / iBetaMean;
+//console.log(JSON.stringify(qq[0]));
+  return {
     t: t,
-    sd: q2.sd(),
+    sd: sd,
     betaEstimate: betaEstimate,
+    betaMean: betaMean,
+    betaSd: betaSd,
+    iBetaMean: iBetaMean,
     iBetaSd: iBetaSd,
   };
-
-  return returnStruct;
 }
 
 // varargin is optional
@@ -128,4 +159,9 @@ export function PAL_Gumbel(alpha, beta, gamma, lambda, x, varargin) {
   } else {
     throw new Error("Invalid varargin: ", varargin);
   }
+}
+
+
+function multiplyVector(a,b){
+  return a.map((e,i) => e * b[i]);
 }

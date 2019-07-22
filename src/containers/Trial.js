@@ -9,8 +9,8 @@ import {Redirect} from "react-router-dom";
 
 import {getStore, getEncryptedId, getDataSent} from '../store';
 
-
 var _ = require('lodash');
+var AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const Q_KEY_CODE = 81;
 const E_KEY_CODE = 69;
@@ -223,7 +223,7 @@ class Trial extends Component {
               {this.state.index == this.props.contrasts.length ? (
                 <span>Complete. Please wait...</span>
               ) : (
-                <span>#{this.state.index + 1}</span>
+                <span></span> //<span>#{this.state.index + 1}</span>
               )}
             </p>
           </div>

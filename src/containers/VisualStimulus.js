@@ -103,7 +103,6 @@ class VisualStimulus extends Component {
 */
 
   render() {
-
     return (
       <div>
         <img src={RATINGS_SRC} width="256" height="256" style={
@@ -113,19 +112,32 @@ class VisualStimulus extends Component {
             width: '50%',
             height: '50%',
             marginTop: '12vw',
-            backgroundColor: "#F8F8F8",
+            backgroundColor: "#A8A8A8",
             visibility: this.props.showRatings ? 'visible' : 'hidden',
           }
          }
         />
+        <div width="256" height="256" style={
+          {
+            zIndex:9,
+            position: "fixed",
+            left: "25%",
+            top: 0,
+            width: '50vw',
+            height: '50vw',
+            background: "#A8A8A8",
+            visibility: this.props.showRatings ? 'visible' : 'hidden',
+          }
+        }></div>
         <canvas id="c" width="256" height="256"
           style={
             {
               zIndex:1,
               position: "fixed",
               left: "25%",
-              width: '50%',
-              height:'auto',
+              width: '50vw',
+              height: '50vw',
+              top: 0,
             }
           }></canvas>
 

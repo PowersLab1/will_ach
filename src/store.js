@@ -91,7 +91,6 @@ export function setEncryptedId(encryptedId) {
     SessionStorageBackedStore.clear();
 
     // Update id and save store
-    // Note that
     SessionStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
     SessionStorageBackedStore.save();
   }

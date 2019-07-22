@@ -47,6 +47,7 @@ class Welcome extends Component {
     } else {
       // If an id is passed in as a param, then we set it.
       setEncryptedId(params.id);
+      return;
     }
 
     // After we update the id and data is still "sent",

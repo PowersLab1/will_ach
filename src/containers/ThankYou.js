@@ -83,9 +83,11 @@ class ThankYou extends Component {
       return <Redirect to="/Trial_TT_1" /> // this is clearly wrong
     } else if (this.state.loading) {
       return (
-        <p className="ThankYou-text">
-          Loading...
-        </p>
+        <div className="ThankYou">
+          <p className="ThankYou-text">
+            Loading...
+          </p>
+        </div>
       );
     }
 

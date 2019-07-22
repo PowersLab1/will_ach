@@ -42,7 +42,7 @@ class Quest {
         dim
       );
 
-      return this.recompute();
+      this.recompute();
   }
 
   recompute() {
@@ -100,7 +100,7 @@ class Quest {
       }
 
       var linear = require('everpolate').linear;
-      q.xThreshold= linear( q.pThreshold , q.p2, q.x2);
+      q.xThreshold = linear( q.pThreshold , q.p2, q.x2);
 
       for (let i = 0; i < q.p2.length; i++){
           if(!isFinite(q.p2[i])){
@@ -112,21 +112,18 @@ class Quest {
         math.eval(q.delta + "*" + q.gamma + "+ ( 1 -" + q.delta + " ) * ( 1 - ( 1-" + q.gamma +") * e^(-10 ^ (" + q.beta + "* (" + x + "+" + q.xThreshold + "))))")
       );
 
-      let tempC = q.p2.slice();
-      tempC = tempC.reverse();
+      let tempC = _.clone(q.p2).reverse();
       let array1 = tempC.map((x) => 1 - x);
       let array2 = tempC;
 
       q.s2[0] = array1;
       q.s2[1] = array2;
 
-      if (_.isEmpty(q.intensity.length) || _.isEmpty(q.response.length)) {
-          let arrayZero = _.fill(Array(10000), 0);
+      if (_.isEmpty(q.intensity) || _.isEmpty(q.response)) {
           q.trialCount = 0;
-          q.intensity = arrayZero;
-          q.response = arrayZero;
+          q.intensity = _.fill(Array(100), 0);
+          q.response = _.fill(Array(100), 0);
       }
-
 
       for (let k = 0; k < q.s2.length; k++){
           for (let i = 0; i < q.s2[k].length; i++){
@@ -152,21 +149,19 @@ class Quest {
       }
 
       for (let k = 0; k < q.trialCount; k++){
-        var inten = Math.max(-1e10, Math.min(1e10, q.intensity[k]));
-        var ii = q.i.map((x) => q.pdf.length + x - Math.round(( inten - q.tGuess ) / q.grain));
+        const inten = Math.max(-1e10, Math.min(1e10, q.intensity[k]));
+        let ii = q.i.map((x) =>  q.pdf.length + x - Math.round((inten - q.tGuess) / q.grain));
 
         if (ii[0] < 1) {
-            ii = ii.map((x) => x + 1 - ii[0]);
+          ii = ii.map((x) => x + 1 - ii[0]);
         }
 
-        if( _.last(ii) > q.s2[0].length) {
-            ii = ii.map((x) => x + q.s2.length - _.last(ii));
+        if (_.last(ii) > q.s2[0].length) {
+          ii = ii.map((x) => x + q.s2[0].length - _.last(ii));
         }
 
-        let h2 = ii.map((x) => q.s2[q.response[k]][x]);
-
-        for (let i = 0; i < h2.length; i++){
-            q.pdf[i] = q.pdf[i] * h2[i];
+        for (let i = 0; i < ii.length; i++) {
+            q.pdf[i] = q.pdf[i] * q.s2[q.response[k]][ii[i] - 1];
         }
 
     		if (q.normalizePdf && k % 100 == 0){
@@ -183,7 +178,6 @@ class Quest {
             throw new Error( 'pdf is not finite');
         }
       }
-
   }
 
   update(intensity, response) {
@@ -228,17 +222,15 @@ class Quest {
       q.trialCount += 1;
 
       // Out of space in preallocated arrays. Reallocate for additional
-      // 10000 trials. We reallocate in large chunks to reduce memory
+      // 100 trials. We reallocate in large chunks to reduce memory
       // fragmentation.
-      if (q.trialCount > q.intensity.length){
-          q.intensity = [...q.intensity, ..._.fill(Array(10000), 0)];
-          q.response = [...q.response, ..._.fill(Array(10000), 0)];
+      if (q.trialCount > q.intensity.length) {
+          q.intensity = [...q.intensity, ..._.fill(Array(100), 0)];
+          q.response = [...q.response, ..._.fill(Array(100), 0)];
       }
 
-      for (let i = 0; i < q.trialCount; i++) {
-          q.intensity[i] = 0.5;
-          q.response[i] = response;
-      }
+      q.intensity[q.trialCount - 1] = intensity;
+      q.response[q.trialCount - 1] = response;
   }
 
   trials(binsize=0) {
@@ -353,8 +345,7 @@ class Quest {
     const q = this.params;
     var i = Math.round((t - q.tGuess) / q.grain) + 1 + q.dim / 2;
     i = Math.min(q.pdf.length, Math.max(1 , i));
-    var p = q.pdf[i - 1];
-    return p;
+    return q.pdf[i - 1];
   }
 
   // p=QuestP(q,x)
