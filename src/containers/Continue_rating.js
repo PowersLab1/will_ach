@@ -13,7 +13,6 @@ class Continue_rating extends Component {
 
     keyFunction = (event) => {
     if(event.keyCode === 81) {
-      alert("User has Requested to Continue");
       this.setState((state, props) => ({
         continue: true
       }));
@@ -41,7 +40,7 @@ class Continue_rating extends Component {
           <div className="text-container">
             <p className="Continue_rating-text">
               Congratulations
-              <br /><br /> You have completed the first trial.
+              <br /><br /> You have completed the second trial.
               <br /><br /> A visual white noise will be shown throughout the experiment.
               <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
               <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.

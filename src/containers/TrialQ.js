@@ -4,11 +4,11 @@ import './TrialQ.css';
 import { Redirect } from "react-router-dom";
 import Trial from './Trial';
 
-import Quest from "../lib/Quest.js";
 import {create_blocks_singleton} from '../lib/tt_blocks';
 import {setQuestData, processAndStoreData, getProcessedData} from '../store';
 
 var _ = require('lodash');
+var questlib = require('questlib');
 
 class TrialQ extends Component {
   constructor(props) {
@@ -30,8 +30,8 @@ class TrialQ extends Component {
       dim = 1000, // Never used? what??
       range = 20;
 
-    this.q1 = new Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
-    this.q2 = new Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q1 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q2 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
     this.maxIndex = 1; // Inclusive

@@ -13,7 +13,6 @@ class OnceMore extends Component {
 
       keyFunction = (event) => {
         if(event.keyCode === 81) {
-          alert("User has Requested to Continue");
           this.setState((state, props) => ({
             continue: true
           }));

@@ -3,7 +3,6 @@ import './Break.css';
 import { Redirect } from "react-router-dom";
 
 class Break1 extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -13,7 +12,6 @@ class Break1 extends Component {
 
       keyFunction = (event) => {
         if(event.keyCode === 81) {
-          alert("User has Requested to Continue");
           this.setState((state, props) => ({
               continue: true
           }));

@@ -1,3 +1,8 @@
+import PUBLIC_KEY from './publickey';
+
+const _ = require('lodash');
+const NodeRSA = require('node-rsa');
+
 //amp:0..100, freq in Hz, ms
 export function beep(amp, freq, ms, audioContext) {
   if (!audioContext) return;
@@ -31,3 +36,9 @@ export const isLocalhost = Boolean(
       /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
     )
 );
+
+export function encryptWithPublicKey(data) {
+   const key = new NodeRSA();
+   key.importKey(PUBLIC_KEY, 'pkcs8-public-pem');
+   return key.encrypt(data, 'base64');
+}

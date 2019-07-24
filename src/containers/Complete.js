@@ -13,7 +13,6 @@ class Complete extends Component {
 
     keyFunction = (event) => {
     if(event.keyCode === 81) {
-      alert("User has Requested to Continue");
       this.setState((state, props) => ({
         continue: true
       }));
@@ -39,7 +38,6 @@ class Complete extends Component {
         <div className="text-container">
           <p className="Complete-text">
             Congratulations
-            <br /><br /> You have completed the first trial
             <br /><br /> Now we will continue with the next trials.
             <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
             <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.

@@ -1,28 +1,26 @@
-import {process_data} from "./lib/VisualQuest.js"
-import {canUseSessionStorage} from "./lib/utils";
+import {canUseSessionStorage, encryptWithPublicKey} from "./lib/utils";
 
+const config = require('./config');
 const _ = require('lodash');
+var questlib = require('questlib');
 
 // Global store for setting and getting trial data.
 // Simpler than redux and suits our needs.
 
 // CONSTANTS
-
 export const ENCRYPTED_ID_KEY = 'encrypted_id';
 export const QUEST_KEY = 'quest';
 export const Q1_KEY = 'q1';
 export const Q2_KEY = 'q2';
-
 export const PROCESSED_DATA_KEY = 'processedData';
-
 export const TRIAL_KEY_PREFIX = 'trial_';
 export const RESPONSE_KEY = 'response';
 export const RESPONSE_TIME_KEY = 'responseTime';
 export const RATINGS_KEY = 'ratings';
 export const CONTRASTS_KEY = 'contrasts';
 export const DATA_SENT_KEY = 'dataSent';
-
 export const STORAGE_KEY = 'store';
+export const TRIAL_TYPE_KEY = 'trialType';
 
 export function setQuestData(
   contrasts_q1,
@@ -56,7 +54,7 @@ export function getQuestData() {
 
 export function processAndStoreData(q1, q2) {
   const store = SessionStorageBackedStore.store;
-  store[PROCESSED_DATA_KEY] = process_data(q1, q2);
+  store[PROCESSED_DATA_KEY] = questlib.ProcessQuestData(q1, q2);
   SessionStorageBackedStore.save();
 }
 
@@ -110,8 +108,11 @@ export function setDataSent(dataSent) {
 }
 
 // Export data
-export function getStoreJSONString() {
-  return JSON.stringify(SessionStorageBackedStore.store);
+export function getEncryptedStore() {
+  // Inject trial type before encrypting store
+  const dataToExport = _.clone(SessionStorageBackedStore.store);
+  dataToExport[TRIAL_TYPE_KEY] = config.trialType;
+  return encryptWithPublicKey(JSON.stringify(dataToExport));
 }
 
 // Helper function that checks whether store is ready to be

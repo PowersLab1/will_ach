@@ -3,7 +3,7 @@ import logo from "../media/psych_logo.jpg"
 import './ThankYou.css';
 import { Redirect } from "react-router-dom";
 import {
-  getStoreJSONString,
+  getEncryptedStore,
   isStoreComplete,
   clearStore,
   getEncryptedId,
@@ -14,9 +14,10 @@ import {isLocalhost} from "../lib/utils";
 
 var https = require('https');
 var querystring = require('querystring');
+const config = require('../config');
 
-const AWS_LAMBDA_HOST = "czd0kq86x5.execute-api.us-east-1.amazonaws.com";
-const AWS_LAMBDA_PATH = "/default/saveTrialData";
+const AWS_LAMBDA_HOST = config.awsLambda.host;
+const AWS_LAMBDA_PATH = config.awsLambda.path;
 
 class ThankYou extends Component {
   constructor(props) {
@@ -30,7 +31,6 @@ class ThankYou extends Component {
 
   keyFunction = (event) => {
     if (event.keyCode === 81) {
-      alert("User has Requested to Continue");
         this.setState((state, props) => ({
           continue: true
         })
@@ -48,12 +48,13 @@ class ThankYou extends Component {
       return;
     }
 
+    console.log(getEncryptedStore());
     // Sanity check data
     if (isStoreComplete()) {
       // don't send data if we're testing locally
       if (!isLocalhost) {
         // Send request and mark data as sent
-        sendRequest(getEncryptedId(), getStoreJSONString()).then(
+        sendRequest(getEncryptedId(), getEncryptedStore()).then(
           () => {
             setDataSent(true);
             this.setState({loading: false});
