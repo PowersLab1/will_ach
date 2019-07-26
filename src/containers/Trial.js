@@ -7,7 +7,7 @@ import {createStim, createGabor} from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
 import {Redirect} from "react-router-dom";
 
-import {getStore, getEncryptedId, getDataSent} from '../store';
+import {getStore, getEncryptedMetadata, getDataSent} from '../store';
 
 var _ = require('lodash');
 const config = require('../config');
@@ -177,7 +177,7 @@ class Trial extends Component {
     document.addEventListener("keydown", this.keyFunction, false);
 
     // If we don't have an id on file, then abort
-    if (_.isUndefined(getEncryptedId())) {
+    if (_.isUndefined(getEncryptedMetadata())) {
       this.setState({invalid: true});
     }
 

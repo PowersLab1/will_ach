@@ -7,7 +7,7 @@ import {
   isStoreComplete,
   clearStore,
   clearTrialData,
-  getEncryptedId,
+  getEncryptedMetadata,
   setDataSent,
   getDataSent,
 } from '../store';
@@ -59,7 +59,7 @@ class ThankYou extends Component {
       // don't send data if we're testing locally
       if (!isLocalhost) {
         // Send request and mark data as sent
-        sendRequest(getEncryptedId(), getEncryptedStore()).then(
+        sendRequest(getEncryptedMetadata(), getEncryptedStore()).then(
           () => {
             setDataSent(true);
             this.setState({loading: false});
@@ -133,11 +133,11 @@ class ThankYou extends Component {
 export default ThankYou;
 
 // Helpers
-function sendRequest(encryptedId, data) {
+function sendRequest(encryptedMetadata, data) {
   return new Promise(function(resolve, reject) {
     // Call api endpoint for update
     const postData = querystring.stringify({
-        encrypted_id: encryptedId,
+        encrypted_metadata: encryptedMetadata,
         data: data,
     });
 

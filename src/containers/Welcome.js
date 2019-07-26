@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from "../media/psych_logo.jpg"
 import './Welcome.css';
 import {Redirect} from "react-router-dom";
-import {setEncryptedId, getEncryptedId, getDataSent} from '../store';
+import {setEncryptedMetadata, getEncryptedMetadata, getDataSent} from '../store';
 
 var qs = require('query-string');
 var _ = require('lodash');
@@ -35,17 +35,17 @@ class Welcome extends Component {
       {ignoreQueryPrefix: true}
     );
 
-    // Update encrypted id
+    // Update encrypted metadata (param id)
     if (_.isUndefined(params.id)) {
-      // If no id is passed in as a param AND we don't
-      // have an id saved in our store, then we can't proceed.
+      // If no metadata is passed in as a param AND we don't
+      // have metadata saved in our store, then we can't proceed.
       // Show error page.
-      if (_.isUndefined(getEncryptedId())) {
+      if (_.isUndefined(getEncryptedMetadata())) {
         this.setState({invalid: true});
       }
     } else {
-      // If an id is passed in as a param, then we set it.
-      setEncryptedId(params.id);
+      // If metadata is passed in as a param, then we set it.
+      setEncryptedMetadata(params.id);
       return;
     }
 

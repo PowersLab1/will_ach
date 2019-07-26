@@ -8,7 +8,7 @@ var questlib = require('questlib');
 // Simpler than redux and suits our needs.
 
 // CONSTANTS
-export const ENCRYPTED_ID_KEY = 'encrypted_id';
+export const ENCRYPTED_METADATA_KEY = 'encrypted_metadata';
 export const QUEST_KEY = 'quest';
 export const Q1_KEY = 'q1';
 export const Q2_KEY = 'q2';
@@ -83,19 +83,19 @@ export function getTrialData(trialNum) {
   return LocalStorageBackedStore.store[getTrialKey(trialNum)];
 }
 
-export function setEncryptedId(encryptedId) {
-  if (encryptedId !== LocalStorageBackedStore.store[ENCRYPTED_ID_KEY]) {
+export function setEncryptedMetadata(encryptedMetadata) {
+  if (encryptedMetadata !== LocalStorageBackedStore.store[ENCRYPTED_METADATA_KEY]) {
     // Reset state
     LocalStorageBackedStore.clear();
 
     // Update id and save store
-    LocalStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
+    LocalStorageBackedStore.store[ENCRYPTED_METADATA_KEY] = encryptedMetadata;
     LocalStorageBackedStore.save();
   }
 }
 
-export function getEncryptedId() {
-  return LocalStorageBackedStore.store[ENCRYPTED_ID_KEY];
+export function getEncryptedMetadata() {
+  return LocalStorageBackedStore.store[ENCRYPTED_METADATA_KEY];
 }
 
 export function getDataSent() {
@@ -119,7 +119,7 @@ export function getEncryptedStore() {
 // sent out.
 export function isStoreComplete() {
   // Store should have encrypted id
-  if (_.isUndefined(getEncryptedId())) {
+  if (_.isUndefined(getEncryptedMetadata())) {
     return false;
   }
 
@@ -191,17 +191,17 @@ export function clearStore() {
   LocalStorageBackedStore.clear();
 }
 
-// Clear only trial data; that is, keep id and dataSent flag.
+// Clear only trial data; that is, keep metadata and dataSent flag.
 export function clearTrialData() {
   // Save data we want to keep
-  const encryptedId = getEncryptedId();
+  const encryptedMetadata = getEncryptedMetadata();
   const dataSent = getDataSent();
 
   // Clear storage
   LocalStorageBackedStore.clear();
 
   // Set data without using setters so we don't trip unwanted logic
-  LocalStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
+  LocalStorageBackedStore.store[ENCRYPTED_METADATA_KEY] = encryptedMetadata;
   LocalStorageBackedStore.store[DATA_SENT_KEY] = dataSent;
 
   // Remember to persist
