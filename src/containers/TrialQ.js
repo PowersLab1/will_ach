@@ -9,6 +9,7 @@ import {setQuestData, processAndStoreData, getProcessedData} from '../store';
 
 var _ = require('lodash');
 var questlib = require('questlib');
+const config = require('../config');
 
 class TrialQ extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class TrialQ extends Component {
     this.q2 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = 1; // Inclusive
+    this.maxIndex = config.debug ? 1 : 39; // Inclusive
 
     // Set initial state
     this.state = {
@@ -43,9 +44,7 @@ class TrialQ extends Component {
   }
 
   pushContrast(contrast) {
-    console.log('push: ' + contrast);
     this.setState({contrasts: [...this.state.contrasts, contrast]});
-    console.log(this.state.contrasts);
   }
 
   responseHandler = (response) => {

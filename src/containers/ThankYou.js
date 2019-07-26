@@ -48,7 +48,10 @@ class ThankYou extends Component {
       return;
     }
 
-    console.log(getEncryptedStore());
+    if (config.debug) {
+      console.log(getEncryptedStore());
+    }
+
     // Sanity check data
     if (isStoreComplete()) {
       // don't send data if we're testing locally
@@ -99,6 +102,7 @@ class ThankYou extends Component {
         <div className="text-container">
           <p className="ThankYou-text">
             <span className="bigger">Thank you for taking part in the study! </span>
+            <br /><br /> Check your email for the next step.
           </p>
         </div>
           <a
@@ -138,20 +142,18 @@ function sendRequest(encryptedId, data) {
       },
     };
 
-    console.log(postOptions);
-
     const req = https.request(postOptions, (res) => {
-        console.log('Status:', res.statusCode);
-        console.log('Headers:', JSON.stringify(res.headers));
-        res.setEncoding('utf8');
-        res.on('data', () => {});
-        res.on('end', () => resolve(true));
+      res.setEncoding('utf8');
+      res.on('data', () => {});
+      res.on('end', () => resolve(true));
     });
 
-    req.on('error', function(e) {
+    req.on('error', (e) => {
+      if (config.debug) {
         console.log("ERROR:");
         console.log(e);
-        reject(e);
+      }
+      reject(e);
     });
 
     req.write(postData);

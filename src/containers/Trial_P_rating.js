@@ -13,9 +13,6 @@ class Trial_P_Rating extends Component {
       correct += response[i] == (contrasts[i] > 0);
     }
 
-    console.log(contrasts);
-    console.log(response);
-
     if (correct > 0.7 * contrasts.length) {
       return <Redirect to="/Continue_rating" />
     } else {

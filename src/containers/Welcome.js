@@ -60,7 +60,6 @@ class Welcome extends Component {
   }
 
   render() {
-    console.log(this.state);
     if (this.state.invalid) {
       return <Redirect to="/Error" />
     } else if (this.state.dataSent) {

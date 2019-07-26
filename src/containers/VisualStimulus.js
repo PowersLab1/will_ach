@@ -96,11 +96,6 @@ class VisualStimulus extends Component {
   componentWillUnmount() {
     window.cancelAnimationFrame(this.animationFrameId);
   }
-/*
-  componentWillReceiveProps(props) {
-    console.log(props);
-  }
-*/
 
   render() {
     return (

@@ -10,6 +10,7 @@ import {Redirect} from "react-router-dom";
 import {getStore, getEncryptedId, getDataSent} from '../store';
 
 var _ = require('lodash');
+const config = require('../config');
 var AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const Q_KEY_CODE = 81;
@@ -110,7 +111,9 @@ class Trial extends Component {
 
     var that = this;
     function playStimulus() {
-      that.log_debug();
+      if (config.debug) {
+        that.log_debug();
+      }
 
       // If we've reached the end, then shutdown and return
       if (that.state.index == that.props.contrasts.length) {
@@ -295,8 +298,7 @@ class Trial extends Component {
 
 
 Trial.defaultProps = {
-  // contrasts: _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
-  contrasts: _.shuffle([0]),
+  contrasts: config.debug ? [0] : _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
   responseHandler: _.noop,

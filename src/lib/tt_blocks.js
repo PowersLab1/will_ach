@@ -1,6 +1,7 @@
 import {getProcessedData} from '../store';
 
 var _ = require('lodash');
+const config = require('../config');
 
 export function create_blocks(c25, c50, c75) {
   // Creates arrays in the form of:
@@ -15,39 +16,38 @@ export function create_blocks(c25, c50, c75) {
     ]);
   }
 
-/*
-  var blocks = [
-    create_block(2, 1, 1, 26),
-    create_block(8, 4, 4, 14),
-    create_block(11, 5, 6, 8),
-    create_block(12, 7, 6, 5),
-    create_block(13, 7, 6, 4),
-    create_block(14, 7, 6, 3),
-    create_block(14, 7, 7, 2),
-    create_block(14, 7, 7, 2),
-    create_block(14, 7, 7, 2),
-    create_block(14, 7, 7, 2),
-    create_block(14, 7, 7, 2),
-    create_block(14, 7, 7, 2)
-];
-*/
- // For testing, to be deleted eventually
-
-  var blocks = [
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-    create_block(1,0,0,0),
-  ];
-
+  let blocks;
+  if (config.debug) {
+    blocks = [
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+      create_block(1,0,0,0),
+    ];
+  } else {
+    blocks = [
+      create_block(2, 1, 1, 26),
+      create_block(8, 4, 4, 14),
+      create_block(11, 5, 6, 8),
+      create_block(12, 7, 6, 5),
+      create_block(13, 7, 6, 4),
+      create_block(14, 7, 6, 3),
+      create_block(14, 7, 7, 2),
+      create_block(14, 7, 7, 2),
+      create_block(14, 7, 7, 2),
+      create_block(14, 7, 7, 2),
+      create_block(14, 7, 7, 2),
+      create_block(14, 7, 7, 2)
+    ];
+  }
 
   // Finally, shuffle each block before returning
   return _.map(blocks, (block) => _.shuffle(block));

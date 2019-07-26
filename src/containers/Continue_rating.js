@@ -28,11 +28,9 @@ class Continue_rating extends Component {
 
 
       render() {
-        console.log(this.props.data);
-
         if(this.state.continue === true){
-      return <Redirect to="/TrialQ" />
-    }
+          return <Redirect to="/TrialQ" />
+        }
 
       return (
         <div className="Continue_rating">
