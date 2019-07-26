@@ -1,4 +1,4 @@
-import {canUseSessionStorage, encryptWithPublicKey} from "./lib/utils";
+import {canUseLocalStorage, encryptWithPublicKey} from "./lib/utils";
 
 const config = require('./config');
 const _ = require('lodash');
@@ -30,7 +30,7 @@ export function setQuestData(
   response_q2,
   responseTime_q2) {
 
-  const store = SessionStorageBackedStore.store;
+  const store = LocalStorageBackedStore.store;
 
   // set up objects
   store[QUEST_KEY] = {};
@@ -45,21 +45,21 @@ export function setQuestData(
   store[QUEST_KEY][Q2_KEY][RESPONSE_KEY] = response_q2;
   store[QUEST_KEY][Q2_KEY][RESPONSE_TIME_KEY] = responseTime_q2;
 
-  SessionStorageBackedStore.save();
+  LocalStorageBackedStore.save();
 }
 
 export function getQuestData() {
-  return SessionStorageBackedStore.store[QUEST_KEY];
+  return LocalStorageBackedStore.store[QUEST_KEY];
 }
 
 export function processAndStoreData(q1, q2) {
-  const store = SessionStorageBackedStore.store;
+  const store = LocalStorageBackedStore.store;
   store[PROCESSED_DATA_KEY] = questlib.ProcessQuestData(q1, q2);
-  SessionStorageBackedStore.save();
+  LocalStorageBackedStore.save();
 }
 
 export function getProcessedData() {
-  return SessionStorageBackedStore.store[PROCESSED_DATA_KEY];
+  return LocalStorageBackedStore.store[PROCESSED_DATA_KEY];
 }
 
 function getTrialKey(trialNum) {
@@ -67,7 +67,7 @@ function getTrialKey(trialNum) {
 }
 
 export function setTrialData(trialNum, contrasts, response, responseTime, ratings) {
-  const store = SessionStorageBackedStore.store;
+  const store = LocalStorageBackedStore.store;
 
   const key = getTrialKey(trialNum);
   store[key] = {};
@@ -76,41 +76,41 @@ export function setTrialData(trialNum, contrasts, response, responseTime, rating
   store[key][RESPONSE_TIME_KEY] = responseTime;
   store[key][RATINGS_KEY] = ratings;
 
-  SessionStorageBackedStore.save();
+  LocalStorageBackedStore.save();
 }
 
 export function getTrialData(trialNum) {
-  return SessionStorageBackedStore.store[getTrialKey(trialNum)];
+  return LocalStorageBackedStore.store[getTrialKey(trialNum)];
 }
 
 export function setEncryptedId(encryptedId) {
-  if (encryptedId !== SessionStorageBackedStore.store[ENCRYPTED_ID_KEY]) {
+  if (encryptedId !== LocalStorageBackedStore.store[ENCRYPTED_ID_KEY]) {
     // Reset state
-    SessionStorageBackedStore.clear();
+    LocalStorageBackedStore.clear();
 
     // Update id and save store
-    SessionStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
-    SessionStorageBackedStore.save();
+    LocalStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
+    LocalStorageBackedStore.save();
   }
 }
 
 export function getEncryptedId() {
-  return SessionStorageBackedStore.store[ENCRYPTED_ID_KEY];
+  return LocalStorageBackedStore.store[ENCRYPTED_ID_KEY];
 }
 
 export function getDataSent() {
-  return SessionStorageBackedStore.store[DATA_SENT_KEY];
+  return LocalStorageBackedStore.store[DATA_SENT_KEY];
 }
 
 export function setDataSent(dataSent) {
-  SessionStorageBackedStore.store[DATA_SENT_KEY] = dataSent;
-  SessionStorageBackedStore.save();
+  LocalStorageBackedStore.store[DATA_SENT_KEY] = dataSent;
+  LocalStorageBackedStore.save();
 }
 
 // Export data
 export function getEncryptedStore() {
   // Inject trial type before encrypting store
-  const dataToExport = _.clone(SessionStorageBackedStore.store);
+  const dataToExport = _.clone(LocalStorageBackedStore.store);
   dataToExport[TRIAL_TYPE_KEY] = config.trialType;
   return encryptWithPublicKey(JSON.stringify(dataToExport));
 }
@@ -146,11 +146,11 @@ export function isStoreComplete() {
  *                              *
  ********************************/
 
-const SessionStorageBackedStore = {
+const LocalStorageBackedStore = {
    get store() {
     if (_.isUndefined(this._store)) {
-      if (canUseSessionStorage()) {
-        const savedStore = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+      if (canUseLocalStorage()) {
+        const savedStore = JSON.parse(localStorage.getItem(STORAGE_KEY));
         this._store = savedStore ? savedStore : {};
       } else {
         this._store = {};
@@ -161,27 +161,49 @@ const SessionStorageBackedStore = {
   },
 
   save() {
-    if (canUseSessionStorage()) {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(this.store));
-      console.log("saved: " + sessionStorage.getItem(STORAGE_KEY));
+    if (canUseLocalStorage()) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.store));
+      if (config.debug) {
+        console.log("saved: " + localStorage.getItem(STORAGE_KEY));
+      }
     }
   },
 
   clear() {
-    console.log('cleared');
+    if (config.debug) {
+      console.log('cleared');
+    }
+
     this._store = undefined;
 
-    if (canUseSessionStorage()) {
-      sessionStorage.removeItem(STORAGE_KEY);
+    if (canUseLocalStorage()) {
+      localStorage.removeItem(STORAGE_KEY);
     }
   }
 }
 
 // Expose store functions
 export function getStore() {
-  return SessionStorageBackedStore.store;
+  return LocalStorageBackedStore.store;
 }
 
 export function clearStore() {
-  return SessionStorageBackedStore.clear();
+  LocalStorageBackedStore.clear();
+}
+
+// Clear only trial data; that is, keep id and dataSent flag.
+export function clearTrialData() {
+  // Save data we want to keep
+  const encryptedId = getEncryptedId();
+  const dataSent = getDataSent();
+
+  // Clear storage
+  LocalStorageBackedStore.clear();
+
+  // Set data without using setters so we don't trip unwanted logic
+  LocalStorageBackedStore.store[ENCRYPTED_ID_KEY] = encryptedId;
+  LocalStorageBackedStore.store[DATA_SENT_KEY] = dataSent;
+
+  // Remember to persist
+  LocalStorageBackedStore.save();
 }

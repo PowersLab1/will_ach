@@ -1,4 +1,4 @@
-//creates a stimulus structure
+// Creates a stimulus structure
 export function createStim() {
   var stim = {
     background: 255/2,
@@ -19,7 +19,7 @@ export function createStim() {
   return stim;
 };
 
-//creates the gabor layer necessary for the stimulus
+// Creates the gabor layer to be overlaid the noise
 export function createGabor(stim, contrast) {
   var xs = [];
   var ys = [];

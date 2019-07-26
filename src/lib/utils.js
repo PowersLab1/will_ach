@@ -27,6 +27,17 @@ export function canUseSessionStorage() {
   }
 }
 
+export function canUseLocalStorage() {
+  const test = 'test';
+  try {
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
 export const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.

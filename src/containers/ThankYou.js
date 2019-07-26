@@ -6,6 +6,7 @@ import {
   getEncryptedStore,
   isStoreComplete,
   clearStore,
+  clearTrialData,
   getEncryptedId,
   setDataSent,
   getDataSent,
@@ -49,7 +50,8 @@ class ThankYou extends Component {
     }
 
     if (config.debug) {
-      console.log(getEncryptedStore());
+      console.log("encrypted store: " + getEncryptedStore());
+      console.log('localStorage: ' + JSON.stringify(localStorage));
     }
 
     // Sanity check data
@@ -61,15 +63,23 @@ class ThankYou extends Component {
           () => {
             setDataSent(true);
             this.setState({loading: false});
+
+            // Since we're using localStorage to persist information,
+            // we clear trial data after we send so it doesn't linger.
+            // However, we do keep the id and dataSent so that
+            // the user knows the data is sent even if the link is
+            // reaccessed.
+            clearTrialData();
           }
         );
       } else {
         // If localhost, just mark data as sent
         setDataSent(true);
         this.setState({loading: false});
+        clearTrialData();
       }
     } else {
-      // Store isn't complete so something went wrong.
+      // Store isn't complete so something went wrong. Clear the whole store.
       clearStore();
       this.setState({invalid: true});
     }
