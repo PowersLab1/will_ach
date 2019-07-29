@@ -124,7 +124,8 @@ class ThankYou extends Component {
         <div className="text-container">
           <p className="ThankYou-text">
             <span className="bigger">Thank you for taking part in the study! </span>
-            <br /><br /> Check your email for the next step.
+            <br /><br /> Please return to the survey and complete the remaining trials.
+            <br /><br /> Once you're all done, refresh the survey page to proceed.
           </p>
         </div>
           <a

@@ -49,6 +49,7 @@ class Trial extends Component {
       trialStarted: false,
       complete: false,
       invalid: false,
+      readyToStart: false,
       dataSent: getDataSent(),
     };
 
@@ -186,7 +187,7 @@ class Trial extends Component {
       // this is scheduled this way.
       setTimeout(() => {
         this.precomputeGabors();
-        this.startTrial();
+        this.setState({readyToStart: true});
       }, 0);
     }
   }
@@ -210,8 +211,6 @@ class Trial extends Component {
       return this.props.trialCompleteRenderer(this.props.contrasts, this.response);
     }
 
-
-
     return (
       <div className="Trial">
         {this.state.trialStarted ? (
@@ -231,8 +230,13 @@ class Trial extends Component {
             </p>
           </div>
         ) : (
+
           <p className="Trial-text">
-            Loading...
+            {this.state.readyToStart ? (
+              <span>Press any key to begin</span>
+            ) : (
+              <span>Loading...</span>
+            )}
           </p>
         )}
       </div>
@@ -246,6 +250,12 @@ class Trial extends Component {
    ********************************/
 
   keyFunction = (event) => {
+    if (this.state.readyToStart) {
+      this.setState({readyToStart: false});
+      this.audioContext.resume();
+      this.startTrial();
+    }
+
     if (this.state.responseWindow && _.includes([Q_KEY_CODE, E_KEY_CODE], event.keyCode)) {
       var seconds = new Date().getTime() / 1000;
 
