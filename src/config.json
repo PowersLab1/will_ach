@@ -4,11 +4,11 @@
   "debug": true,
   "awsLambda": {
     "saveTrialData": {
-      "host": "czd0kq86x5.execute-api.us-east-1.amazonaws.com",
+      "host": "doh5p62hr7.execute-api.us-east-2.amazonaws.com",
       "path": "/default/saveTrialData"
     },
     "fetchLink": {
-      "host": "q7k5b46en8.execute-api.us-east-1.amazonaws.com",
+      "host": "3pnzb6n9vf.execute-api.us-east-2.amazonaws.com",
       "path": "/default/fetchLink"
     }
   }
