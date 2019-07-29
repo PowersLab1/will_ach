@@ -131,9 +131,12 @@ export function isStoreComplete() {
   }
 
   // Make sure we have data from four TTs
-  for (let i = 1; i <= 4; i++) {
-    if (_.isUndefined(getTrialData(i))) {
-      return false;
+  // If we're debugging though, we don't want to check these
+  if (!config.debug) {
+    for (let i = 1; i <= 4; i++) {
+      if (_.isUndefined(getTrialData(i))) {
+        return false;
+      }
     }
   }
 

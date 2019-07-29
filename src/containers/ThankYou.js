@@ -12,13 +12,12 @@ import {
   getDataSent,
 } from '../store';
 import {isLocalhost} from "../lib/utils";
+import {aws_saveTrialData, aws_fetchLink} from "../lib/aws_lambda";
 
 var https = require('https');
 var querystring = require('querystring');
 const config = require('../config');
-
-const AWS_LAMBDA_HOST = config.awsLambda.host;
-const AWS_LAMBDA_PATH = config.awsLambda.path;
+var _ = require('lodash');
 
 // Char limit for data store, as determined by redcap fields
 const CHAR_LIMIT = 65535;
@@ -29,11 +28,13 @@ class ThankYou extends Component {
     this.state = {
       continue: false,
       invalid: false,
-      loading: true,
+      sentData: false,
+      link: undefined,
     };
   }
 
   keyFunction = (event) => {
+    // 81 is 'Q'
     if (event.keyCode === 81) {
         this.setState((state, props) => ({
           continue: true
@@ -43,58 +44,68 @@ class ThankYou extends Component {
   }
 
   componentDidMount() {
-     // Send data here, only if it is complete
     document.addEventListener("keydown", this.keyFunction, false);
+
+    const encryptedMetadata = getEncryptedMetadata();
+    const encryptedStore = getEncryptedStore();
+
+    // Load up link if not localhost
+    if (!isLocalhost) {
+      aws_fetchLink(encryptedMetadata).then(
+        (link) => this.setState({link: link})
+      );
+    } else {
+      this.setState({link: "link"});
+    }
 
     // If we already sent data, nothing to do.
     if (getDataSent()) {
-      this.setState({loading: false});
+      this.setState({sentData: true});
       return;
     }
 
     if (config.debug) {
-      console.log("encrypted metadata: " + getEncryptedMetadata());
-      console.log("encrypted store: " + getEncryptedStore());
+      console.log("encrypted metadata: " + encryptedMetadata);
+      console.log("encrypted store: " + encryptedStore);
       console.log('localStorage: ' + JSON.stringify(localStorage));
     }
 
-    // Sanity check data
-    if (isStoreComplete()) {
-      // don't send data if we're testing locally
-      if (!isLocalhost) {
-        const encryptedMetadata = getEncryptedMetadata();
-        const encryptedStore = getEncryptedStore();
-
-        // If store is too big, then abort
-        if (encryptedStore.length > CHAR_LIMIT) {
-          throw "Store is too big";
-        }
-
-        // Send request and mark data as sent
-        sendRequest(encryptedMetadata, encryptedStore).then(
-          () => {
-            setDataSent(true);
-            this.setState({loading: false});
-
-            // Since we're using localStorage to persist information,
-            // we clear trial data after we send so it doesn't linger.
-            // However, we do keep the id and dataSent so that
-            // the user knows the data is sent even if the link is
-            // reaccessed.
-            clearTrialData();
-          }
-        );
-      } else {
-        // If localhost, just mark data as sent
-        setDataSent(true);
-        this.setState({loading: false});
-        clearTrialData();
-      }
-    } else {
+    // Send data, only if it is complete
+    if (!isStoreComplete()) {
       // Store isn't complete so something went wrong. Clear the whole store.
       clearStore();
       this.setState({invalid: true});
+      return;
     }
+
+    // don't send data if we're testing locally
+    if (isLocalhost) {
+      // If localhost, just mark data as sent
+      setDataSent(true);
+      this.setState({sentData: true});
+      clearTrialData();
+      return;
+    }
+
+    // If store is too big, then abort
+    if (encryptedStore.length > CHAR_LIMIT) {
+      throw "Store is too big";
+    }
+
+    // Send request and mark data as sent
+    aws_saveTrialData(encryptedMetadata, encryptedStore).then(
+      () => {
+        setDataSent(true);
+        this.setState({sentData: true});
+
+        // Since we're using localStorage to persist information,
+        // we clear trial data after we send so it doesn't linger.
+        // However, we do keep the id and dataSent so that
+        // the user knows the data is sent even if the link is
+        // reaccessed.
+        clearTrialData();
+      }
+    );
   }
 
   componentWillUnmount(){
@@ -102,12 +113,11 @@ class ThankYou extends Component {
   }
 
   render() {
-
     if (this.state.invalid) {
       return <Redirect to="/Error" />
     } else if (this.state.continue) {
-      return <Redirect to="/Trial_TT_1" /> // this is clearly wrong
-    } else if (this.state.loading) {
+      window.location.assign(this.state.link); // this is clearly wrong
+    } else if (!this.state.sentData || _.isUndefined(this.state.link)) {
       return (
         <div className="ThankYou">
           <p className="ThankYou-text">
@@ -124,8 +134,7 @@ class ThankYou extends Component {
         <div className="text-container">
           <p className="ThankYou-text">
             <span className="bigger">Thank you for taking part in the study! </span>
-            <br /><br /> Please return to the survey and complete the remaining trials.
-            <br /><br /> Once you're all done, refresh the survey page to proceed.
+            <br /><br /> Please <a href={this.state.link}>click here</a> or press 'Q' to return to the survey.
           </p>
         </div>
           <a
@@ -144,42 +153,3 @@ class ThankYou extends Component {
 }
 
 export default ThankYou;
-
-// Helpers
-function sendRequest(encryptedMetadata, data) {
-  return new Promise(function(resolve, reject) {
-    // Call api endpoint for update
-    const postData = querystring.stringify({
-        encrypted_metadata: encryptedMetadata,
-        data: data,
-    });
-
-    const postOptions = {
-      hostname: AWS_LAMBDA_HOST,
-      port: 443,
-      path: AWS_LAMBDA_PATH,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(postData),
-      },
-    };
-
-    const req = https.request(postOptions, (res) => {
-      res.setEncoding('utf8');
-      res.on('data', () => {});
-      res.on('end', () => resolve(true));
-    });
-
-    req.on('error', (e) => {
-      if (config.debug) {
-        console.log("ERROR:");
-        console.log(e);
-      }
-      reject(e);
-    });
-
-    req.write(postData);
-    req.end();
-  });
-}

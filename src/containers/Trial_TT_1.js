@@ -7,6 +7,7 @@ import {setTrialData} from '../store';
 import {create_blocks_singleton} from '../lib/tt_blocks';
 
 var _ = require('lodash');
+const config = require('../config');
 
 const TRIAL_NUM = 1;
 const BLOCK_START = 0;
@@ -25,7 +26,12 @@ class Trial_TT_1 extends Component {
   }
 
   trialCompleteRenderer = (contrasts, response) => {
-    return <Redirect to="/Break1" />
+    // If debugging, then we're done here
+    if (config.debug) {
+      return <Redirect to="/ThankYou" />
+    } else {
+      return <Redirect to="/Break1" />
+    }
   }
 
   dataHandler = (contrasts, response, responseTime, ratings) => {

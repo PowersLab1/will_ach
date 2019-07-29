@@ -1,9 +1,15 @@
 {
   "trialType": 2,
   "trialName": "visual",
+  "debug": true,
   "awsLambda": {
-    "host": "czd0kq86x5.execute-api.us-east-1.amazonaws.com",
-    "path": "/default/saveTrialData"
-  },
-  "debug": true
+    "saveTrialData": {
+      "host": "czd0kq86x5.execute-api.us-east-1.amazonaws.com",
+      "path": "/default/saveTrialData"
+    },
+    "fetchLink": {
+      "host": "q7k5b46en8.execute-api.us-east-1.amazonaws.com",
+      "path": "/default/fetchLink"
+    }
+  }
 }
