@@ -20,6 +20,9 @@ const config = require('../config');
 const AWS_LAMBDA_HOST = config.awsLambda.host;
 const AWS_LAMBDA_PATH = config.awsLambda.path;
 
+// Char limit for data store, as determined by redcap fields
+const CHAR_LIMIT = 65535;
+
 class ThankYou extends Component {
   constructor(props) {
     super(props);
@@ -50,6 +53,7 @@ class ThankYou extends Component {
     }
 
     if (config.debug) {
+      console.log("encrypted metadata: " + getEncryptedMetadata());
       console.log("encrypted store: " + getEncryptedStore());
       console.log('localStorage: ' + JSON.stringify(localStorage));
     }
@@ -58,8 +62,16 @@ class ThankYou extends Component {
     if (isStoreComplete()) {
       // don't send data if we're testing locally
       if (!isLocalhost) {
+        const encryptedMetadata = getEncryptedMetadata();
+        const encryptedStore = getEncryptedStore();
+
+        // If store is too big, then abort
+        if (encryptedStore.length > CHAR_LIMIT) {
+          throw "Store is too big";
+        }
+
         // Send request and mark data as sent
-        sendRequest(getEncryptedMetadata(), getEncryptedStore()).then(
+        sendRequest(encryptedMetadata, encryptedStore).then(
           () => {
             setDataSent(true);
             this.setState({loading: false});

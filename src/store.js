@@ -21,6 +21,7 @@ export const CONTRASTS_KEY = 'contrasts';
 export const DATA_SENT_KEY = 'dataSent';
 export const STORAGE_KEY = 'store';
 export const TRIAL_TYPE_KEY = 'trialType';
+export const TRIAL_NAME_KEY = 'trialName';
 
 export function setQuestData(
   contrasts_q1,
@@ -109,9 +110,10 @@ export function setDataSent(dataSent) {
 
 // Export data
 export function getEncryptedStore() {
-  // Inject trial type before encrypting store
+  // Inject trial type and name before encrypting store
   const dataToExport = _.clone(LocalStorageBackedStore.store);
   dataToExport[TRIAL_TYPE_KEY] = config.trialType;
+  dataToExport[TRIAL_NAME_KEY] = config.trialName;
   return encryptWithPublicKey(JSON.stringify(dataToExport));
 }
 

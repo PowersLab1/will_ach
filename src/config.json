@@ -1,5 +1,6 @@
 {
   "trialType": 2,
+  "trialName": "visual",
   "awsLambda": {
     "host": "czd0kq86x5.execute-api.us-east-1.amazonaws.com",
     "path": "/default/saveTrialData"

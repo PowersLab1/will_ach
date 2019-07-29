@@ -46,7 +46,6 @@ class Welcome extends Component {
     } else {
       // If metadata is passed in as a param, then we set it.
       setEncryptedMetadata(params.id);
-      return;
     }
 
     // After we update the id and data is still "sent",
