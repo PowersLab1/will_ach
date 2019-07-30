@@ -6,16 +6,14 @@ import {
   getEncryptedStore,
   isStoreComplete,
   clearStore,
-  clearTrialData,
+  clearTaskData,
   getEncryptedMetadata,
   setDataSent,
   getDataSent,
 } from '../store';
 import {isLocalhost} from "../lib/utils";
-import {aws_saveTrialData, aws_fetchLink} from "../lib/aws_lambda";
+import {aws_saveTaskData, aws_fetchLink} from "../lib/aws_lambda";
 
-var https = require('https');
-var querystring = require('querystring');
 const config = require('../config');
 var _ = require('lodash');
 
@@ -83,7 +81,7 @@ class ThankYou extends Component {
       // If localhost, just mark data as sent
       setDataSent(true);
       this.setState({sentData: true});
-      clearTrialData();
+      clearTaskData();
       return;
     }
 
@@ -93,7 +91,7 @@ class ThankYou extends Component {
     }
 
     // Send request and mark data as sent
-    aws_saveTrialData(encryptedMetadata, encryptedStore).then(
+    aws_saveTaskData(encryptedMetadata, encryptedStore).then(
       () => {
         setDataSent(true);
         this.setState({sentData: true});
@@ -103,7 +101,7 @@ class ThankYou extends Component {
         // However, we do keep the id and dataSent so that
         // the user knows the data is sent even if the link is
         // reaccessed.
-        clearTrialData();
+        clearTaskData();
       }
     );
   }

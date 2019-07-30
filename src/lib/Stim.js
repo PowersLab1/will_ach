@@ -7,7 +7,7 @@ export function createStim() {
   var stim = {
     background: 255/2,
     angle: Math.floor(Math.random() * 135) + 45,   // returns a random integer from 45 to 135
-    imsize: 320,
+    imsize: 256,
     initcontrast:  0.5,                  // initial contrast
     threshold:     0.2,                  // moch treshold
     phases: [0, 0.25],                   // phases either 0 and 0.25

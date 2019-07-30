@@ -2,7 +2,7 @@ var https = require('https');
 var querystring = require('querystring');
 const config = require('../config');
 
-export function aws_saveTrialData(encryptedMetadata, data) {
+export function aws_saveTaskData(encryptedMetadata, data) {
   return new Promise(function(resolve, reject) {
     // Call api endpoint for update
     const postData = querystring.stringify({
@@ -11,9 +11,9 @@ export function aws_saveTrialData(encryptedMetadata, data) {
     });
 
     const postOptions = {
-      hostname: config.awsLambda.saveTrialData.host,
+      hostname: config.awsLambda.saveTaskData.host,
       port: 443,
-      path: config.awsLambda.saveTrialData.path,
+      path: config.awsLambda.saveTaskData.path,
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

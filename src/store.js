@@ -4,7 +4,7 @@ const config = require('./config');
 const _ = require('lodash');
 var questlib = require('questlib');
 
-// Global store for setting and getting trial data.
+// Global store for setting and getting task data.
 // Simpler than redux and suits our needs.
 
 // CONSTANTS
@@ -13,15 +13,15 @@ export const QUEST_KEY = 'quest';
 export const Q1_KEY = 'q1';
 export const Q2_KEY = 'q2';
 export const PROCESSED_DATA_KEY = 'processedData';
-export const TRIAL_KEY_PREFIX = 'trial_';
+export const COMPONENT_KEY_PREFIX = 'component_';
 export const RESPONSE_KEY = 'response';
 export const RESPONSE_TIME_KEY = 'responseTime';
 export const RATINGS_KEY = 'ratings';
 export const CONTRASTS_KEY = 'contrasts';
 export const DATA_SENT_KEY = 'dataSent';
 export const STORAGE_KEY = 'store';
-export const TRIAL_TYPE_KEY = 'trialType';
-export const TRIAL_NAME_KEY = 'trialName';
+export const TASK_TYPE_KEY = 'taskType';
+export const TASK_NAME_KEY = 'taskName';
 
 export function setQuestData(
   contrasts_q1,
@@ -63,14 +63,14 @@ export function getProcessedData() {
   return LocalStorageBackedStore.store[PROCESSED_DATA_KEY];
 }
 
-function getTrialKey(trialNum) {
-  return TRIAL_KEY_PREFIX + trialNum;
+function getComponentKey(componentNum) {
+  return COMPONENT_KEY_PREFIX + componentNum;
 }
 
-export function setTrialData(trialNum, contrasts, response, responseTime, ratings) {
+export function setComponentData(componentNum, contrasts, response, responseTime, ratings) {
   const store = LocalStorageBackedStore.store;
 
-  const key = getTrialKey(trialNum);
+  const key = getComponentKey(componentNum);
   store[key] = {};
   store[key][CONTRASTS_KEY] = contrasts;
   store[key][RESPONSE_KEY] = response;
@@ -80,8 +80,8 @@ export function setTrialData(trialNum, contrasts, response, responseTime, rating
   LocalStorageBackedStore.save();
 }
 
-export function getTrialData(trialNum) {
-  return LocalStorageBackedStore.store[getTrialKey(trialNum)];
+export function getComponentData(componentNum) {
+  return LocalStorageBackedStore.store[getComponentKey(componentNum)];
 }
 
 export function setEncryptedMetadata(encryptedMetadata) {
@@ -110,10 +110,10 @@ export function setDataSent(dataSent) {
 
 // Export data
 export function getEncryptedStore() {
-  // Inject trial type and name before encrypting store
+  // Inject task type and name before encrypting store
   const dataToExport = _.clone(LocalStorageBackedStore.store);
-  dataToExport[TRIAL_TYPE_KEY] = config.trialType;
-  dataToExport[TRIAL_NAME_KEY] = config.trialName;
+  dataToExport[TASK_TYPE_KEY] = config.taskType;
+  dataToExport[TASK_NAME_KEY] = config.taskName;
   return encryptWithPublicKey(JSON.stringify(dataToExport));
 }
 
@@ -125,7 +125,7 @@ export function isStoreComplete() {
     return false;
   }
 
-  // Make sure we have quest trial data
+  // Make sure we have quest task data
   if (_.isUndefined(getQuestData())) {
     return false;
   }
@@ -134,7 +134,7 @@ export function isStoreComplete() {
   // If we're debugging though, we don't want to check these
   if (!config.debug) {
     for (let i = 1; i <= 4; i++) {
-      if (_.isUndefined(getTrialData(i))) {
+      if (_.isUndefined(getComponentData(i))) {
         return false;
       }
     }
@@ -196,8 +196,8 @@ export function clearStore() {
   LocalStorageBackedStore.clear();
 }
 
-// Clear only trial data; that is, keep metadata and dataSent flag.
-export function clearTrialData() {
+// Clear only task data; that is, keep metadata and dataSent flag.
+export function clearTaskData() {
   // Save data we want to keep
   const encryptedMetadata = getEncryptedMetadata();
   const dataSent = getDataSent();

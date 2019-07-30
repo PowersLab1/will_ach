@@ -7,7 +7,6 @@ import Trial from './Trial';
 import {create_blocks_singleton} from '../lib/tt_blocks';
 import {setQuestData, processAndStoreData, getProcessedData} from '../store';
 
-var _ = require('lodash');
 var questlib = require('questlib');
 const config = require('../config');
 

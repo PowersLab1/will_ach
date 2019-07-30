@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Redirect} from "react-router-dom";
 import Trial from './Trial';
 
-import {setTrialData} from '../store';
+import {setComponentData} from '../store';
 import {create_blocks_singleton} from '../lib/tt_blocks';
 
 var _ = require('lodash');
@@ -29,7 +29,7 @@ class Trial_TT_4 extends Component {
   }
 
   dataHandler = (contrasts, response, responseTime, ratings) => {
-    setTrialData(
+    setComponentData(
       TRIAL_NUM,
       contrasts,
       response,

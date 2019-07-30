@@ -1,11 +1,11 @@
 {
-  "trialType": 2,
-  "trialName": "visual",
+  "taskType": 2,
+  "taskName": "visual",
   "debug": false,
   "awsLambda": {
-    "saveTrialData": {
-      "host": "doh5p62hr7.execute-api.us-east-2.amazonaws.com",
-      "path": "/default/saveTrialData"
+    "saveTaskData": {
+      "host": "de8cnjde61.execute-api.us-east-2.amazonaws.com",
+      "path": "/default/saveTaskData"
     },
     "fetchLink": {
       "host": "3pnzb6n9vf.execute-api.us-east-2.amazonaws.com",

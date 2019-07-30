@@ -13,7 +13,7 @@ var _ = require('lodash');
 var SimplexNoise = require('simplex-noise');
 
 const IMG_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
-const CANVAS_LENGTH = 320;
+const CANVAS_LENGTH = 256;
 
 class VisualStimulus extends Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class VisualStimulus extends Component {
               }
             }
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
 
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 1] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - stim.alpha) * r * 250;
@@ -61,7 +61,7 @@ class VisualStimulus extends Component {
             // and convenient so we do it here.
             stimulus = undefined;
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
 
             const val = c + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = val;
