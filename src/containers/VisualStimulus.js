@@ -50,7 +50,7 @@ class VisualStimulus extends Component {
               }
             }
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
 
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 1] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - stim.alpha) * r * 250;
@@ -61,7 +61,7 @@ class VisualStimulus extends Component {
             // and convenient so we do it here.
             stimulus = undefined;
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
 
             const val = c + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = val;
@@ -78,10 +78,12 @@ class VisualStimulus extends Component {
       const rectHeight = canvas.height / 8;
       ctx.fillStyle = "gray";
 
+
       var xPos = (canvas.width / 2) - (rectWidth / 2);
       var yPos = (canvas.height / 2) - (rectHeight / 2);
 
       ctx.fillRect(xPos, yPos, rectWidth, rectHeight);
+
 
       // Render next frame
       that.animationFrameId = window.requestAnimationFrame(nextFrame);
@@ -127,7 +129,7 @@ class VisualStimulus extends Component {
           }
          }
         ></div>
-        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center clip-circle blur blurred-edge"
+        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center clip-circle"
           style={
             {
               zIndex:1,
