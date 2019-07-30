@@ -76,11 +76,11 @@
 }
 
 .blur {
-  filter: blur(5px);
-  -webkit-filter: blur(5px);
-  -moz-filter: blur(5px);
-  -o-filter: blur(5px);
-  -ms-filter: blur(5px);
+  filter: blur(4px);
+  -webkit-filter: blur(4px);
+  -moz-filter: blur(4px);
+  -o-filter: blur(4px);
+  -ms-filter: blur(4px);
 }
 
 .circle {
@@ -96,17 +96,17 @@
 }
 
 .cross-1 {
-  width: 8vh;
+  width: 9vh;
   height: 2px;
   background: white;
 }
 
 .cross-2 {
   width: 2px;
-  height: 8vh;
+  height: 9vh;
   background: white;
 }
 
 .radial-gradient {
-  background: radial-gradient(circle, rgba(158,158,158,0) 40%, rgba(158,158,158,1) 75%);
+  background: radial-gradient(circle, rgba(158,158,158,0) 50%, rgba(158,158,158,1) 70%);
 }
