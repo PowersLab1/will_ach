@@ -3,13 +3,13 @@ export function createStim() {
   var stim = {
     background: 255/2,
     angle: Math.floor(Math.random() * 135) + 45,   // returns a random integer from 45 to 135
-    imsize: 256,
+    imsize: 320,
     initcontrast:  0.5,                  // initial contrast
     threshold:     0.2,                  // moch treshold
     phases: [0, 0.25],                   // phases either 0 and 0.25
     phase: 0,
     alpha: 0.5,
-    ppd: 160,
+    ppd: 80,
     frequency: 0,                  // gabor spatial frequency
   }
 
@@ -55,7 +55,7 @@ export function createGabor(stim, contrast) {
 }
 
 //this blends the two layers
-export function blendfun(alpha, a, b) {
+export function blend(alpha, a, b) {
   var stimulusArr = [];
 
   for (var x = 0; x < a.length && x < b.length; x++){

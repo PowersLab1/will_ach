@@ -57,7 +57,7 @@ class Trial extends Component {
     this.canvasRef = React.createRef();
     this.audioContext = new AudioContext();
     this.initialDelay = 2000; // time until first stimulus, in ms
-    this.delay = 3000; // time in between stimuli, in ms
+    this.delay = 2500; // time in between stimuli, in ms
     this.numAttempts = 0;
     this.numAttemptsLimit = 100;
 
@@ -212,22 +212,23 @@ class Trial extends Component {
     }
 
     return (
-      <div className="Trial">
+      <div className={"Trial " + (this.state.trialStarted ? "Trial-gray" : "")}>
         {this.state.trialStarted ? (
-          <div>
+          <div className="Trial-stimulus">
             <VisualStimulus
               showContrast={this.state.showContrast}
               showRatings={this.state.ratingWindow}
               contrast={this.state.contrast}
               precomputedGabor={this.precomputedGabors[this.state.index]}
             />
+            /*
             <p className="Trial-progress">
               {this.state.index == this.props.contrasts.length ? (
                 <span>Complete. Please wait...</span>
               ) : (
                 <span></span> //<span>#{this.state.index + 1}</span>
               )}
-            </p>
+            </p>*/
           </div>
         ) : (
 
