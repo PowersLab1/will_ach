@@ -220,14 +220,6 @@ class Trial extends Component {
               contrast={this.state.contrast}
               precomputedGabor={this.precomputedGabors[this.state.index]}
             />
-            /*
-            <p className="Trial-progress">
-              {this.state.index == this.props.contrasts.length ? (
-                <span>Complete. Please wait...</span>
-              ) : (
-                <span></span> //<span>#{this.state.index + 1}</span>
-              )}
-            </p>*/
           </div>
         ) : (
 

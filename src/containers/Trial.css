@@ -106,3 +106,7 @@
   height: 8vh;
   background: white;
 }
+
+.radial-gradient {
+  background: radial-gradient(circle, rgba(158,158,158,0) 40%, rgba(158,158,158,1) 75%);
+}

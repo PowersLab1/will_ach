@@ -131,13 +131,20 @@ class VisualStimulus extends Component {
           style={
             {
               zIndex:1,
-              width: '80vh',
-              height: '80',
+              width: '85vh',
+              height: '85vh',
             }
           }></canvas>
         <div class="center circle blurred-edge" style={{zIndex: 3}}></div>
         <div class="center cross-1" style={{zIndex: 10}}></div>
         <div class="center cross-2" style={{zIndex: 10}}></div>
+        <div class="center radial-gradient"
+          style={
+            {
+              zIndex: 20,
+              width: '85vh',
+              height: '85vh',
+            }}></div>
 
       </div>
     );
