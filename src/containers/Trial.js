@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './Trial.css';
 import {beep} from "../lib/utils";
-import {createStim, createGabor} from "../lib/Stim.js";
+import {patch, createGabor} from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
 import {Redirect} from "react-router-dom";
 
@@ -59,7 +59,7 @@ class Trial extends Component {
     this.initialDelay = 2000; // time until first stimulus, in ms
     this.delay = 2500; // time in between stimuli, in ms
     this.numAttempts = 0;
-    this.numAttemptsLimit = 100;
+    this.numAttemptsLimit = 60;
 
     // user inputs
     this.response = [];
@@ -77,10 +77,9 @@ class Trial extends Component {
   }
 
   precomputeGabors() {
-    var stim = createStim();
     for (let i = 0; i < this.props.contrasts.length; i++) {
       if (_.isUndefined(this.precomputedGabors[i])) {
-        this.precomputedGabors[i] = createGabor(stim, this.props.contrasts[i]);
+        this.precomputedGabors[i] = createGabor(patch, this.props.contrasts[i]);
       }
     }
   }

@@ -1,7 +1,7 @@
 {
   "trialType": 2,
   "trialName": "visual",
-  "debug": true,
+  "debug": false,
   "awsLambda": {
     "saveTrialData": {
       "host": "doh5p62hr7.execute-api.us-east-2.amazonaws.com",

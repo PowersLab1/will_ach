@@ -1,3 +1,7 @@
+export const stim = createStim();
+export const patch = createPatch(stim);
+export const stimulus_blank = createGabor(patch, 0);
+
 // Creates a stimulus structure
 export function createStim() {
   var stim = {
@@ -20,7 +24,12 @@ export function createStim() {
 };
 
 // Creates the gabor layer to be overlaid the noise
-export function createGabor(stim, contrast) {
+export function createGabor(patch, contrast) {
+  var grating = patch.map((x) => stim.background + (x * stim.background * contrast));
+  return grating;
+}
+
+function createPatch(stim) {
   var xs = [];
   var ys = [];
 
@@ -46,12 +55,10 @@ export function createGabor(stim, contrast) {
       ) * xs[i] + Math.cos(
         Math.PI / 180 * stim.angle
       ) * ys[i]
-    ) + stim.phase)) * contrast;
+    ) + stim.phase));
   }
 
-  var grating = patch.map((x) => stim.background + (x * stim.background));
-
-  return grating;
+  return patch;
 }
 
 //this blends the two layers

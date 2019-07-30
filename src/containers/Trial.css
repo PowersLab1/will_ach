@@ -91,6 +91,10 @@
     box-shadow: 0 0 10px 10px #9e9e9e;
 }
 
+.blurred-edge {
+  box-shadow: 0 0 10px 10px #9e9e9e;
+}
+
 .cross-1 {
   width: 8vh;
   height: 2px;

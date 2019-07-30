@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {createStim, createGabor} from "../lib/Stim.js";
+import {stim, patch, stimulus_blank, createGabor} from "../lib/Stim.js";
 import RATINGS_SRC from "../media/rating_scale.png";
 import RATINGS_1_SRC from "../media/rating_1.png";
 import RATINGS_2_SRC from "../media/rating_2.png";
@@ -14,10 +14,6 @@ var SimplexNoise = require('simplex-noise');
 
 const IMG_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
 const CANVAS_LENGTH = 320;
-
-var stim = createStim();
-var stimulus_blank = createGabor(stim, 0);
-console.log("Stim created");
 
 class VisualStimulus extends Component {
   constructor(props) {
@@ -50,7 +46,7 @@ class VisualStimulus extends Component {
                 stimulus = that.props.precomputedGabor;
               } else {
                 // Otherwise, we create it ourselves
-                stimulus = createGabor(stim, that.props.contrast);
+                stimulus = createGabor(patch, that.props.contrast);
               }
             }
 
@@ -131,7 +127,7 @@ class VisualStimulus extends Component {
           }
          }
         ></div>
-        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center clip-circle blur"
+        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center clip-circle blur blurred-edge"
           style={
             {
               zIndex:1,
@@ -139,7 +135,7 @@ class VisualStimulus extends Component {
               height: '80',
             }
           }></canvas>
-        <div class="center circle" style={{zIndex: 3}}></div>
+        <div class="center circle blurred-edge" style={{zIndex: 3}}></div>
         <div class="center cross-1" style={{zIndex: 10}}></div>
         <div class="center cross-2" style={{zIndex: 10}}></div>
 
