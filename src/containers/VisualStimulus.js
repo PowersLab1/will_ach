@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {stim, patch, stimulus_blank, createGabor} from "../lib/Stim.js";
-import RATINGS_SRC from "../media/rating_scale.png";
-import RATINGS_1_SRC from "../media/rating_1.png";
-import RATINGS_2_SRC from "../media/rating_2.png";
-import RATINGS_3_SRC from "../media/rating_3.png";
-import RATINGS_4_SRC from "../media/rating_4.png";
-import RATINGS_5_SRC from "../media/rating_5.png";
+import RATINGS_1_SRC from "../media/rating_keydown_1.png";
+import RATINGS_2_SRC from "../media/rating_keydown_2.png";
+import RATINGS_3_SRC from "../media/rating_keydown_3.png";
+import RATINGS_4_SRC from "../media/rating_keydown_4.png";
+import RATINGS_5_SRC from "../media/rating_keydown_5.png";
 import './Trial.css';
 
 var _ = require('lodash');
@@ -14,6 +13,15 @@ var SimplexNoise = require('simplex-noise');
 
 const IMG_SRC = "https://raw.githubusercontent.com/PowersLab1/VCH_APP_SMITH/master/src/media/fix_cross.png";
 const CANVAS_LENGTH = 256;
+
+const ratingToImgSrc = {
+  0: "", // Default
+  1: RATINGS_1_SRC,
+  2: RATINGS_2_SRC,
+  3: RATINGS_3_SRC,
+  4: RATINGS_4_SRC,
+  5: RATINGS_5_SRC,
+}
 
 class VisualStimulus extends Component {
   constructor(props) {
@@ -50,7 +58,7 @@ class VisualStimulus extends Component {
               }
             }
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .6  + 0.65;
 
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 1] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - stim.alpha) * r * 250;
@@ -61,7 +69,7 @@ class VisualStimulus extends Component {
             // and convenient so we do it here.
             stimulus = undefined;
 
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .8  + 0.65;
+            const r = simplex.noise3D(x / 8, y / 8, t/5) * .6  + 0.65;
 
             const val = c + (1 - stim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = val;
@@ -105,7 +113,7 @@ class VisualStimulus extends Component {
   render() {
     return (
       <div>
-        <img src={RATINGS_SRC} width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center"
+        <img src={ratingToImgSrc[this.props.currentRating]} width={CANVAS_LENGTH} height={CANVAS_LENGTH} className="center"
         style={
           {
             zIndex: 101,
@@ -129,7 +137,7 @@ class VisualStimulus extends Component {
           }
          }
         ></div>
-        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} class="center clip-circle"
+        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} className="center clip-circle"
           style={
             {
               zIndex:1,
@@ -137,10 +145,10 @@ class VisualStimulus extends Component {
               height: '85vh',
             }
           }></canvas>
-        <div class="center circle blurred-edge" style={{zIndex: 3}}></div>
-        <div class="center cross-1" style={{zIndex: 10}}></div>
-        <div class="center cross-2" style={{zIndex: 10}}></div>
-        <div class="center radial-gradient"
+        <div className="center circle blurred-edge" style={{zIndex: 3}}></div>
+        <div className="center cross-1" style={{zIndex: 10}}></div>
+        <div className="center cross-2" style={{zIndex: 10}}></div>
+        <div className="center radial-gradient"
           style={
             {
               zIndex: 20,
@@ -164,6 +172,7 @@ VisualStimulus.defaultProps = {
 VisualStimulus.propTypes = {
   showContrast: PropTypes.bool.isRequired,
   showRatings: PropTypes.bool,
+  currentRating: PropTypes.number,
   contast: PropTypes.number,
   precomputedGabor: PropTypes.array,
 }

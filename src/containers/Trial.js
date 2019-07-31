@@ -51,6 +51,8 @@ class Trial extends Component {
       invalid: false,
       readyToStart: false,
       dataSent: getDataSent(),
+      currentRating: 1,
+      stopShowingRating: false,
     };
 
     // class props init
@@ -65,6 +67,10 @@ class Trial extends Component {
     this.response = [];
     this.responseTime = [];
     this.ratings = [];
+
+    // timers
+    this.ratingTimer = undefined;
+    this.stimulusTimer = undefined;
 
     // time keeping
     this.startTime = 0;
@@ -106,47 +112,40 @@ class Trial extends Component {
     beep(amp /* amp */, 830 /* freq */, ms /* ms */, this.audioContext);
   }
 
+  playStimulus = () => {
+    var that = this;
+    if (config.debug) {
+      that.log_debug();
+    }
+
+    // If we've reached the end, then shutdown and return
+    if (that.state.index == that.props.contrasts.length) {
+      that.shutdown();
+      return;
+    }
+
+    // Increment index and check if we hit maximum number of attempts,
+    // in which case we stop early
+    if (that.numAttempts++ == that.numAttemptsLimit) {
+      that.setState({complete: true});
+      return;
+    }
+
+    // Start time window for receiving a response
+    that.setState({responseWindow: true});
+    that.startTime = new Date().getTime() / 1000;
+
+    // Play stimuli
+    const contrast = that.props.contrasts[that.state.index];
+    that.playAuditoryStimulus(50, STIMULUS_MS);
+    that.playVisualStimulus(contrast, STIMULUS_MS);
+
+    this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
+  }
+
   startTrial() {
     this.setState({trialStarted: true});
-
-    var that = this;
-    function playStimulus() {
-      if (config.debug) {
-        that.log_debug();
-      }
-
-      // If we've reached the end, then shutdown and return
-      if (that.state.index == that.props.contrasts.length) {
-        that.shutdown();
-        return;
-      }
-
-      // If we got a response but not a rating, then we'll keep the
-      // window open and reschedule the stimulus.
-      if (that.state.ratingWindow) {
-        setTimeout(playStimulus, 2000);
-        return;
-      }
-
-      // Increment index and check if we hit maximum number of attempts,
-      // in which case we stop early
-      if (that.numAttempts++ == that.numAttemptsLimit) {
-        that.setState({complete: true});
-        return;
-      }
-
-      // Start time window for receiving a response
-      that.setState({responseWindow: true});
-      that.startTime = new Date().getTime() / 1000;
-
-      // Play stimuli
-      const contrast = that.props.contrasts[that.state.index];
-      that.playAuditoryStimulus(50, STIMULUS_MS);
-      that.playVisualStimulus(contrast, STIMULUS_MS);
-
-      setTimeout(playStimulus, that.delay + that.jitter());
-    }
-    setTimeout(playStimulus, that.initialDelay);
+    this.stimulusTimer = setTimeout(this.playStimulus, this.initialDelay);
   }
 
   jitter() {
@@ -174,7 +173,8 @@ class Trial extends Component {
    ********************************/
 
   componentDidMount() {
-    document.addEventListener("keydown", this.keyFunction, false);
+    document.addEventListener("keydown", this.keyDownFunction, false);
+    document.addEventListener("keyup", this.keyUpFunction, false);
 
     // If we don't have an id on file, then abort
     if (_.isUndefined(getEncryptedMetadata())) {
@@ -192,7 +192,9 @@ class Trial extends Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.keyFunction, false);
+    document.removeEventListener("keydown", this.keyDownFunction, false);
+    document.removeEventListener("keyup", this.keyUpFunction, false);
+
     this.audioContext.close();
   }
 
@@ -217,6 +219,7 @@ class Trial extends Component {
             <VisualStimulus
               showContrast={this.state.showContrast}
               showRatings={this.state.ratingWindow}
+              currentRating={this.state.currentRating}
               contrast={this.state.contrast}
               precomputedGabor={this.precomputedGabors[this.state.index]}
             />
@@ -241,7 +244,7 @@ class Trial extends Component {
    *                              *
    ********************************/
 
-  keyFunction = (event) => {
+  keyDownFunction = (event) => {
     if (this.state.readyToStart) {
       this.setState({readyToStart: false});
       this.audioContext.resume();
@@ -263,7 +266,21 @@ class Trial extends Component {
       // If we're also recording ratings, then open the window
       // for receiving ratings
       if (this.props.shouldRecordRatings) {
-        this.setState({ratingWindow: true});
+        clearTimeout(this.stimulusTimer);
+        this.setState({ratingWindow: true, currentRating: 1, stopShowingRating: false});
+
+        var that = this;
+        function scheduleRating() {
+          that.ratingTimer = setTimeout(() => {
+            if (that.state.currentRating == 5 || that.state.stopShowingRating) {
+              that.finishRatingWindow();
+              return;
+            }
+            that.setState({currentRating: that.state.currentRating + 1});
+            scheduleRating();
+          }, 565);
+        }
+        scheduleRating();
       } else {
         // Otherwise, move on to the next index
         this.setState({index: this.state.index + 1});
@@ -272,14 +289,27 @@ class Trial extends Component {
         // as is the case with the Quest trial.
         this.precomputeGabors();
       }
-    } else if (this.state.ratingWindow && _.includes(RATING_KEY_CODES, event.keyCode)) {
-      this.ratings.push(KEY_CODE_TO_RATING[event.keyCode]);
-      this.setState({
-        index: this.state.index + 1,
-        ratingWindow: false,
-      });
-      this.precomputeGabors();
     }
+  }
+
+  keyUpFunction = (event) => {
+    if (this.state.ratingWindow) {
+      // Get response key code
+      const responseKeyCode = _.last(this.response) == 1 ? Q_KEY_CODE : E_KEY_CODE;
+      if (responseKeyCode == event.keyCode) {
+        this.setState({stopShowingRating: true});
+      }
+    }
+  };
+
+  finishRatingWindow = () => {
+    this.ratings.push(this.state.currentRating);
+    this.setState({
+      index: this.state.index + 1,
+      ratingWindow: false,
+    });
+    this.precomputeGabors();
+    this.stimulusTimer = setTimeout(this.playStimulus, 1000 + this.jitter());
   }
 
   // Debugging
