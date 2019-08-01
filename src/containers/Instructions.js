@@ -40,7 +40,7 @@ class Instructions extends Component {
               <p className="Instructions-text">
                 This is a vision test.
                 <br /><br /> A visual white noise will be shown throughout the experiment.
-                <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
+                <br /><br /> A striped-texture might appear inside the white noise when a tone is played.
                 <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
                 <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
                 <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>

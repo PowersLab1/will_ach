@@ -37,13 +37,17 @@ class Continue_rating extends Component {
           <header className="Continue_rating-header">
           <div className="text-container">
             <p className="Continue_rating-text">
-              Congratulations
-              <br /><br /> You have completed the second trial.
-              <br /><br /> A visual white noise will be shown throughout the experiment.
-              <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
+              Great!
+              <br /><br /> You have completed the practice trials. Now onto the real test.
+              <br /><br />  It is important to note that the striped-texture in the practice session was there to make sure
+              <br /><br />  you understood what to do, with very obvious and impossible-to-see stripes.
+              <br /><br />  The striped-texture in the remainder of the experiment
+              <br /><br />  may be very difficult to see so you will have to look very hard.
+              <br /><br />  Sometimes it might be difficult to answer, but if you do not know, please guess.
+              <br /><br />  For this first task, you will not be asked to rate your confidence so just quickly press
+              <br /><br />  and release the button as soon as the screen flashes.
               <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
               <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
-              <br /><br /> There are no ratings for this part, so only indicate YES or NO, similar to the first practice session.
               <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
               <br /><br /><br /> PRESS "Q"/YES TO BEGIN THE EXPERIMENT.
             </p>

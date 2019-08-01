@@ -38,8 +38,8 @@ class OnceMore extends Component {
             <header className="OnceMore-header">
             <div className="text-container">
               <p className="OnceMore-text">
-                <br /><br /> Good job! Now let's practice once more.
-                <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
+                <br /><br /> Good job! One more practice session. Get ready! Remember,
+                <br /><br /> a striped-texture might appear inside the white noise when a tone is played.
                 <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
                 <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
                 <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
