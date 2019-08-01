@@ -3,7 +3,6 @@ import './Break.css';
 import { Redirect } from "react-router-dom";
 
 class Break2 extends Component {
-
     constructor(props) {
         super(props);
         this.state = {

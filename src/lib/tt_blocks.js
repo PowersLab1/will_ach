@@ -19,18 +19,18 @@ export function create_blocks(c25, c50, c75) {
   let blocks;
   if (config.debug) {
     blocks = [
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
-      create_block(1,0,0,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
+      create_block(1,1,1,0),
     ];
   } else {
     blocks = [

@@ -278,7 +278,7 @@ class Trial extends Component {
             }
             that.setState({currentRating: that.state.currentRating + 1});
             scheduleRating();
-          }, 565);
+          }, 250);
         }
         scheduleRating();
       } else {

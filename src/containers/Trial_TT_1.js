@@ -28,7 +28,8 @@ class Trial_TT_1 extends Component {
   trialCompleteRenderer = (contrasts, response) => {
     // If debugging, then we're done here
     if (config.debug) {
-      return <Redirect to="/ThankYou" />
+    //  return <Redirect to="/ThankYou" />
+      return <Redirect to="/Break1" />
     } else {
       return <Redirect to="/Break1" />
     }
