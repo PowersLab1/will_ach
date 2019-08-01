@@ -38,18 +38,17 @@ class Continue extends Component {
             <header className="Continue-header">
             <div className="text-container">
               <p className="Continue-text">
-                Congratulations
-                <br /><br /> You have completed the first trial.
-                <br /><br /> A visual white noise will be shown throughout the experiment.
-                <br /><br /> A striped-texture will appear inside the white noise when a tone is played.
-                <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
+                Great!
+                <br /><br /> First task complete! You will do the same thing in the next task, with some important differences:
+                <br /><br /> You will see a rating screen following each trial, press
+                <br /><br /> and then hold the <b> "Q"/YES </b> button or <b> "E"/NO </b> button to indicate rating.
+                <br /><br /> The longer you hold it down, the more certain you are of your choice.
+                <br /><br /> If you hold <b> "Q"/YES </b>  button down for a long time, you are very certain that you  <b> DO </b> see the stripes.
+                <br /><br /> If you hold <b> "E"/NO </b>  button down for a long time, you are very certain that you <b> DO NOT </b> see the stripes.
+                <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b> see the stripes.
                 <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
-                <br /><br /> After you indicate <b> "Q"/YES </b> or  <b> "E"/NO </b> you  will see a rating screen.
-                <br /><br /> Rate your certainty of your answer YES or NO by pressing number keys <b> 1 </b> ,  <b> 2 </b>,  <b> 3 </b>,  <b> 4 </b>  or  <b> 5 </b>
-                <br /><br />  to indicate how certain you are of your answer.
-                <br /><br /> 1 is MOST UNSURE and 5 is MOST CERTAIN.
                 <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
-                <br /><br /><br /> PRESS "Q"/YES TO BEGIN THE EXPERIMENT.
+                <br /><br /><br /> PRESS "Q"/YES WHEN READY TO CONTINUE.
               </p>
             </div>
             </header>

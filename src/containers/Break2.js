@@ -38,7 +38,7 @@ class Break2 extends Component {
             <header className="Break-header">
             <div className="text-container">
               <p className="Break-text">
-                This is a vision test.
+                Great!
                 <br /><br /> Great!!! Take a quick break. Two more to go!
                 <br /><br /> Remember: Continue to look carefully and do the best you can.
                 <br /><br /> The task will continue to be difficult, but it is okay to guess and it is okay to be uncertain.

@@ -38,8 +38,8 @@ class Break3 extends Component {
             <header className="Break-header">
             <div className="text-container">
               <p className="Break-text">
-                This is a vision test.
-                <br /><br /> Great!!! Take a quick break.One more to go!
+                Great!
+                <br /><br /> Take a quick break.One more to go!
                 <br /><br /> Remember: Continue to look carefully and do the best you can.
                 <br /><br /> The task will continue to be difficult, but it is okay to guess and it is okay to be uncertain.
                 <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.

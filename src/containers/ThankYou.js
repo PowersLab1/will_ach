@@ -131,7 +131,7 @@ class ThankYou extends Component {
         <header className="ThankYou-header">
         <div className="text-container">
           <p className="ThankYou-text">
-            <span className="bigger">Thank you for taking part in the study! </span>
+            <span className="bigger"> The experiment is over. Thank you for taking part in the study! </span>
             <br /><br /> Please <a href={this.state.link}>click here</a> or press 'Q' to return to the survey.
           </p>
         </div>
