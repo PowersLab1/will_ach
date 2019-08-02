@@ -28,13 +28,15 @@ class Trial_TT_3 extends Component {
     return <Redirect to="/Break3" />
   }
 
-  dataHandler = (contrasts, response, responseTime, ratings) => {
+  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
     setComponentData(
       TRIAL_NUM,
       contrasts,
       response,
       responseTime,
-      ratings
+      ratings,
+      ratingsRaw,
+      timestamps
     );
   }
 

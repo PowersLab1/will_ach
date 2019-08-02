@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import {Redirect} from "react-router-dom";
 import Trial from './Trial';
+import {setComponentData} from '../store';
 
 var _ = require('lodash');
 
@@ -20,12 +21,24 @@ class Trial_P extends Component {
     }
   }
 
+  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
+    setComponentData(
+      "practice",
+      contrasts,
+      response,
+      responseTime,
+      undefined, // no ratings
+      undefined, // no ratings
+      timestamps
+    );
+  }
+
   render() {
     return (
       <Trial
         shouldRecordRatings={false}
         trialCompleteRenderer={this.trialCompleteRenderer}
-        dataHandler={_.noop}
+        dataHandler={this.dataHandler}
       />
     );
 

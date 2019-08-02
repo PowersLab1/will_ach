@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {stim, patch, stimulus_blank, createGabor} from "../lib/Stim.js";
+import {visualStim, patch, stimulus_blank, createGabor} from "../lib/Stim.js";
 import RATINGS_1_SRC from "../media/rating_keydown_1.png";
 import RATINGS_2_SRC from "../media/rating_keydown_2.png";
 import RATINGS_3_SRC from "../media/rating_keydown_3.png";
@@ -39,9 +39,8 @@ class VisualStimulus extends Component {
 
 
     var stimulus = undefined;
-    var stimulusWithAlpha = undefined;
     var that = this;
-    var c = stim.alpha * stimulus_blank[0];
+    var c = visualStim.alpha * stimulus_blank[0];
 
     function nextFrame() {
       for (var x = 0; x < CANVAS_LENGTH; x++) {
@@ -60,9 +59,9 @@ class VisualStimulus extends Component {
 
             const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
 
-            data[(x + y * CANVAS_LENGTH) * 4 + 0] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - stim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 1] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - stim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 2] = stim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 2] + (1 - stim.alpha) * r * 250;
+            data[(x + y * CANVAS_LENGTH) * 4 + 0] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - visualStim.alpha) * r * 250;
+            data[(x + y * CANVAS_LENGTH) * 4 + 1] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - visualStim.alpha) * r * 250;
+            data[(x + y * CANVAS_LENGTH) * 4 + 2] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 2] + (1 - visualStim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 3] = 255;
           } else {
             // Technically we only need reset this once, but it's relatively inexpensive
@@ -71,7 +70,7 @@ class VisualStimulus extends Component {
 
             const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
 
-            const val = c + (1 - stim.alpha) * r * 250;
+            const val = c + (1 - visualStim.alpha) * r * 250;
             data[(x + y * CANVAS_LENGTH) * 4 + 0] = val;
             data[(x + y * CANVAS_LENGTH) * 4 + 1] = val;
             data[(x + y * CANVAS_LENGTH) * 4 + 2] = val;

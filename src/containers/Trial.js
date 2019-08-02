@@ -2,8 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import './Trial.css';
-import {beep} from "../lib/utils";
-import {patch, createGabor} from "../lib/Stim.js";
+import {
+  patch,
+  createGabor,
+  auditoryStim,
+  playAuditoryStimulus
+} from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
 import {Redirect} from "react-router-dom";
 
@@ -51,7 +55,10 @@ class Trial extends Component {
       invalid: false,
       readyToStart: false,
       dataSent: getDataSent(),
+
+      // ratings related state
       currentRating: 1,
+      stopIncrementingRating: false,
       stopShowingRating: false,
     };
 
@@ -67,6 +74,8 @@ class Trial extends Component {
     this.response = [];
     this.responseTime = [];
     this.ratings = [];
+    this.ratingsRaw = [];
+    this.timestamps = [];
 
     // timers
     this.ratingTimer = undefined;
@@ -74,6 +83,13 @@ class Trial extends Component {
 
     // time keeping
     this.startTime = 0;
+    this.ratingStartTime = 0;
+
+    // keydown status
+    this.isKeyDown = {
+      Q_KEY_CODE: false,
+      E_KEY_CODE: false,
+    }
 
     // Precompute gabor layers for performance
     // Specifically, we don't want our animation to pause while
@@ -88,6 +104,10 @@ class Trial extends Component {
         this.precomputedGabors[i] = createGabor(patch, this.props.contrasts[i]);
       }
     }
+  }
+
+  addTimestamp(eventName) {
+    this.timestamps.push([eventName, new Date().getTime()]);
   }
 
   /********************************
@@ -106,10 +126,6 @@ class Trial extends Component {
         showContrast: false,
       });
     }, ms);
-  }
-
-  playAuditoryStimulus(amp, ms) {
-    beep(amp /* amp */, 830 /* freq */, ms /* ms */, this.audioContext);
   }
 
   playStimulus = () => {
@@ -133,19 +149,22 @@ class Trial extends Component {
 
     // Start time window for receiving a response
     that.setState({responseWindow: true});
-    that.startTime = new Date().getTime() / 1000;
+    that.startTime = new Date().getTime();
 
     // Play stimuli
     const contrast = that.props.contrasts[that.state.index];
-    that.playAuditoryStimulus(50, STIMULUS_MS);
+    playAuditoryStimulus(auditoryStim, that.audioContext);
     that.playVisualStimulus(contrast, STIMULUS_MS);
 
     this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
+
+    this.addTimestamp("presentStimulus");
   }
 
   startTrial() {
     this.setState({trialStarted: true});
     this.stimulusTimer = setTimeout(this.playStimulus, this.initialDelay);
+    this.addTimestamp("startTrial");
   }
 
   jitter() {
@@ -153,6 +172,7 @@ class Trial extends Component {
   }
 
   shutdown() {
+    this.addTimestamp("endTrial");
     this.saveDataToStore();
     this.setState({complete: true});
   }
@@ -162,7 +182,9 @@ class Trial extends Component {
       this.props.contrasts,
       this.response,
       this.responseTime,
-      this.ratings
+      this.ratings,
+      this.ratingsRaw,
+      this.timestamps
     );
   }
 
@@ -249,15 +271,29 @@ class Trial extends Component {
       this.setState({readyToStart: false});
       this.audioContext.resume();
       this.startTrial();
+      return;
+    }
+
+    // First, check whether key is pressed for the first time or key is being
+    // held down. If it's being held down we ignore it.
+    if (_.includes([Q_KEY_CODE, E_KEY_CODE], event.keyCode)) {
+      if (this.isKeyDown[event.keyCode]) {
+        return;
+      } else {
+        this.isKeyDown[event.keyCode] = true;
+      }
     }
 
     if (this.state.responseWindow && _.includes([Q_KEY_CODE, E_KEY_CODE], event.keyCode)) {
-      var seconds = new Date().getTime() / 1000;
+      // record timestamp
+      this.addTimestamp("response");
+
+      var ms = new Date().getTime();
 
       // Record 1 as response if Q, record 0 if E
       const response = event.keyCode === Q_KEY_CODE ? 1 : 0;
       this.response.push(response);
-      this.responseTime.push(seconds - this.startTime);
+      this.responseTime.push(ms - this.startTime);
       this.setState({responseWindow: false});
 
       // Remember to call handler, which is used by the Quest trial
@@ -267,19 +303,30 @@ class Trial extends Component {
       // for receiving ratings
       if (this.props.shouldRecordRatings) {
         clearTimeout(this.stimulusTimer);
-        this.setState({ratingWindow: true, currentRating: 1, stopShowingRating: false});
+        this.setState({
+          ratingWindow: true,
+          currentRating: 1,
+          stopShowingRating: false,
+          stopIncrementingRating: false,
+        });
 
         var that = this;
+        var numIterations = 0;
         function scheduleRating() {
+          numIterations++;
           that.ratingTimer = setTimeout(() => {
-            if (that.state.currentRating == 5 || that.state.stopShowingRating) {
+            if (numIterations == 5 || that.state.stopShowingRating) {
               that.finishRatingWindow();
               return;
             }
-            that.setState({currentRating: that.state.currentRating + 1});
+            if (!that.state.stopIncrementingRating) {
+              that.setState({currentRating: that.state.currentRating + 1});
+            }
             scheduleRating();
           }, 250);
         }
+
+        this.ratingStartTime = new Date().getTime();
         scheduleRating();
       } else {
         // Otherwise, move on to the next index
@@ -293,17 +340,34 @@ class Trial extends Component {
   }
 
   keyUpFunction = (event) => {
+    if (_.includes([Q_KEY_CODE, E_KEY_CODE], event.keyCode)) {
+        this.isKeyDown[event.keyCode] = false;
+    }
+
     if (this.state.ratingWindow) {
       // Get response key code
       const responseKeyCode = _.last(this.response) == 1 ? Q_KEY_CODE : E_KEY_CODE;
       if (responseKeyCode == event.keyCode) {
-        this.setState({stopShowingRating: true});
+        this.addTimestamp("rating");
+
+        var ms = new Date().getTime();
+        this.ratingsRaw.push(ms - this.ratingStartTime);
+        this.setState({stopIncrementingRating: true});
       }
     }
   };
 
   finishRatingWindow = () => {
     this.ratings.push(this.state.currentRating);
+
+    if (this.ratings.length > this.ratingsRaw.length) {
+      this.addTimestamp("rating");
+
+      var ms = new Date().getTime();
+      this.ratingsRaw.push(ms - this.ratingStartTime);
+      this.setState({stopIncrementingRating: true});
+    }
+
     this.setState({
       index: this.state.index + 1,
       ratingWindow: false,
@@ -318,19 +382,22 @@ class Trial extends Component {
     console.log('all contrasts: ' + this.props.contrasts);
     console.log('all responses: ' + this.response);
     console.log('all responseTime: ' + this.responseTime);
+    console.log('all timestamps: ' + JSON.stringify(this.timestamps));
+    console.log('all ratingsRaw: ' + this.ratingsRaw);
     console.log('all ratings: ' + this.ratings);
 
     console.log('index: ' + this.state.index);
     console.log('numAttempts: ' + this.numAttempts);
-    console.log('store: ' + JSON.stringify(getStore()));
-    console.log('localStorage: ' + JSON.stringify(localStorage));
+  //  console.log('store: ' + JSON.stringify(getStore()));
+//    console.log('localStorage: ' + JSON.stringify(localStorage));
     console.log('================================\n');
   }
 } // end class
 
 
 Trial.defaultProps = {
-  contrasts: config.debug ? [0] : _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
+  contrasts: config.debug ? _.shuffle([0, 0, 1, 1]) :
+    _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
   responseHandler: _.noop,

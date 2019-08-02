@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+import {setComponentData} from '../store';
 import {Redirect} from "react-router-dom";
 import Trial from './Trial';
 
@@ -20,12 +21,24 @@ class Trial_P_Rating extends Component {
     }
   }
 
+  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
+    setComponentData(
+      "practice_rating",
+      contrasts,
+      response,
+      responseTime,
+      ratings,
+      ratingsRaw,
+      timestamps
+    );
+  }
+
   render() {
     return (
       <Trial
         shouldRecordRatings={true}
         trialCompleteRenderer={this.trialCompleteRenderer}
-        dataHandler={_.noop()}
+        dataHandler={this.dataHandler}
       />
     );
 

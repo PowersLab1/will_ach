@@ -1,9 +1,17 @@
-export const stim = createStim();
-export const patch = createPatch(stim);
+export const visualStim = createVisualStim();
+export const patch = createPatch(visualStim);
 export const stimulus_blank = createGabor(patch, 0);
 
+export const auditoryStim = createAuditoryStim();
+
+/*****************************
+ *                           *
+ *      Visual stimulus      *
+ *                           *
+ *****************************/
+
 // Creates a stimulus structure
-export function createStim() {
+export function createVisualStim() {
   var stim = {
     background: 255/2,
     angle: Math.floor(Math.random() * 135) + 45,   // returns a random integer from 45 to 135
@@ -15,7 +23,7 @@ export function createStim() {
     alpha: 0.5,
     ppd: 80,
     frequency: 0,                  // gabor spatial frequency
-  }
+  };
 
   stim.phase = stim.phases[Math.round(Math.random())];
   stim.frequency = 2 / stim.ppd;
@@ -25,7 +33,7 @@ export function createStim() {
 
 // Creates the gabor layer to be overlaid the noise
 export function createGabor(patch, contrast) {
-  var grating = patch.map((x) => stim.background + (x * stim.background * contrast));
+  var grating = patch.map((x) => visualStim.background + (x * visualStim.background * contrast));
   return grating;
 }
 
@@ -61,13 +69,35 @@ function createPatch(stim) {
   return patch;
 }
 
-//this blends the two layers
-export function blend(alpha, a, b) {
-  var stimulusArr = [];
 
-  for (var x = 0; x < a.length && x < b.length; x++){
-    stimulusArr[x] = alpha * a[x] + (1 - alpha) * b[x];
-  }
+/*****************************
+ *                           *
+ *     Auditory stimulus     *
+ *                           *
+ *****************************/
+ export function createAuditoryStim() {
+   var stim = {
+     duration: 300, // in ms
+     amp: 50,
+     frequency: 830,
+   };
 
-  return stimulusArr;
-}
+   return stim;
+ };
+
+ export function playAuditoryStimulus(stim, audioContext) {
+   beep(stim.amp, stim.frequency, stim.duration, audioContext);
+ }
+
+ //amp:0..100, freq in Hz, ms
+ export function beep(amp, freq, ms, audioContext) {
+   if (!audioContext) return;
+   var osc = audioContext.createOscillator();
+   var gain = audioContext.createGain();
+   osc.connect(gain);
+   osc.value = freq;
+   gain.connect(audioContext.destination);
+   gain.gain.value = amp/100;
+   osc.start(audioContext.currentTime);
+   osc.stop(audioContext.currentTime+ms/1000);
+ }
