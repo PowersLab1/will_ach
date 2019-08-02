@@ -1,4 +1,5 @@
 import {canUseLocalStorage, encryptWithPublicKey} from "./lib/utils";
+import {visualStim, auditoryStim} from "./lib/Stim";
 
 const config = require('./config');
 const _ = require('lodash');
@@ -9,27 +10,53 @@ var questlib = require('questlib');
 
 // CONSTANTS
 export const ENCRYPTED_METADATA_KEY = 'encrypted_metadata';
+
 export const QUEST_KEY = 'quest';
 export const Q1_KEY = 'q1';
 export const Q2_KEY = 'q2';
+
 export const PROCESSED_DATA_KEY = 'processedData';
 export const COMPONENT_KEY_PREFIX = 'component_';
+
+export const CONTRASTS_KEY = 'contrasts';
 export const RESPONSE_KEY = 'response';
 export const RESPONSE_TIME_KEY = 'responseTime';
 export const RATINGS_KEY = 'ratings';
-export const CONTRASTS_KEY = 'contrasts';
+export const RATINGS_RAW_KEY = 'ratingsRaw';
+export const TIMESTAMPS_KEY = 'timestamps';
+
 export const DATA_SENT_KEY = 'dataSent';
 export const STORAGE_KEY = 'store';
 export const TASK_TYPE_KEY = 'taskType';
 export const TASK_NAME_KEY = 'taskName';
 
+const questParamsToKeep = [
+  'updatePdf',
+  'warnPdf',
+  'normalizePdf',
+  'tGuess',
+  'tGuessSd',
+  'pThreshold',
+  'xThreshold',
+  'beta',
+  'delta',
+  'gamma',
+  'grain',
+  'dim',
+  'quantileOrder'
+];
+
+
 export function setQuestData(
+  q1,
+  q2,
   contrasts_q1,
   response_q1,
   responseTime_q1,
   contrasts_q2,
   response_q2,
-  responseTime_q2) {
+  responseTime_q2,
+  timestamps) {
 
   const store = LocalStorageBackedStore.store;
 
@@ -41,10 +68,14 @@ export function setQuestData(
   store[QUEST_KEY][Q1_KEY][CONTRASTS_KEY] = contrasts_q1;
   store[QUEST_KEY][Q1_KEY][RESPONSE_KEY] = response_q1;
   store[QUEST_KEY][Q1_KEY][RESPONSE_TIME_KEY] = responseTime_q1;
+  store[QUEST_KEY][Q1_KEY]["params"] = _.pick(q1.params, questParamsToKeep);
 
   store[QUEST_KEY][Q2_KEY][CONTRASTS_KEY] = contrasts_q2;
   store[QUEST_KEY][Q2_KEY][RESPONSE_KEY] = response_q2;
   store[QUEST_KEY][Q2_KEY][RESPONSE_TIME_KEY] = responseTime_q2;
+  store[QUEST_KEY][Q2_KEY]["params"] = _.pick(q2.params, questParamsToKeep);
+
+  store[QUEST_KEY][TIMESTAMPS_KEY] = timestamps;
 
   LocalStorageBackedStore.save();
 }
@@ -67,7 +98,7 @@ function getComponentKey(componentNum) {
   return COMPONENT_KEY_PREFIX + componentNum;
 }
 
-export function setComponentData(componentNum, contrasts, response, responseTime, ratings) {
+export function setComponentData(componentNum, contrasts, response, responseTime, ratings, ratingsRaw, timestamps) {
   const store = LocalStorageBackedStore.store;
 
   const key = getComponentKey(componentNum);
@@ -75,7 +106,13 @@ export function setComponentData(componentNum, contrasts, response, responseTime
   store[key][CONTRASTS_KEY] = contrasts;
   store[key][RESPONSE_KEY] = response;
   store[key][RESPONSE_TIME_KEY] = responseTime;
-  store[key][RATINGS_KEY] = ratings;
+  if (!_.isUndefined(ratings)) {
+    store[key][RATINGS_KEY] = ratings;
+  }
+  if (!_.isUndefined(ratingsRaw)) {
+    store[key][RATINGS_RAW_KEY] = ratingsRaw;
+  }
+  store[key][TIMESTAMPS_KEY] = timestamps;
 
   LocalStorageBackedStore.save();
 }
@@ -114,6 +151,12 @@ export function getEncryptedStore() {
   const dataToExport = _.clone(LocalStorageBackedStore.store);
   dataToExport[TASK_TYPE_KEY] = config.taskType;
   dataToExport[TASK_NAME_KEY] = config.taskName;
+  dataToExport["taskVersion"] = config.taskVersion;
+
+  // Inject stim data
+  dataToExport["visualStim"] = visualStim;
+  dataToExport["auditoryStim"] = auditoryStim;
+
   return encryptWithPublicKey(JSON.stringify(dataToExport));
 }
 

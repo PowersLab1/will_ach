@@ -34,7 +34,7 @@ class TrialQ extends Component {
     this.q2 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = config.debug ? 1 : 19; // Inclusive
+    this.maxIndex = config.debug ? 3 : 19; // Inclusive
 
     // Set initial state
     this.state = {
@@ -68,7 +68,7 @@ class TrialQ extends Component {
     return <Redirect to="/Complete" />;
   }
 
-  dataHandler = (contrasts, response, responseTime, ratings) => {
+  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
     // Even indices are for staircase 1, odd for staircase 2
     const contrasts_q1 = contrasts.filter((_, i) => i % 2 === 0);
     const response_q1 = response.filter((_, i) => i % 2 === 0);
@@ -80,12 +80,15 @@ class TrialQ extends Component {
 
     // Save staircase data
     setQuestData(
+      this.q1,
+      this.q2,
       contrasts_q1,
       response_q1,
       responseTime_q1,
       contrasts_q2,
       response_q2,
-      responseTime_q2
+      responseTime_q2,
+      timestamps
     );
 
     // Process data

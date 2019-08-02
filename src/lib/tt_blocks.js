@@ -34,7 +34,8 @@ export function create_blocks(c25, c50, c75) {
     ];
   } else {
     blocks = [
-      create_block(2, 1, 1, 26),
+      // First block has first 15 fixed at c75
+      _.concat(_.fill(Array(15), c75), _.shuffle(create_block(2, 1, 1, 11))),
       create_block(8, 4, 4, 14),
       create_block(11, 5, 6, 8),
       create_block(12, 7, 6, 5),
@@ -49,8 +50,13 @@ export function create_blocks(c25, c50, c75) {
     ];
   }
 
-  // Finally, shuffle each block before returning
-  return _.map(blocks, (block) => _.shuffle(block));
+  // Finally, shuffle each block except for the first one
+  return _.map(blocks, (block, i) => {
+    if (i == 0) {
+      return block;
+    }
+    return _.shuffle(block);
+  });
 }
 
 // Keeps a singleton list of blocks so that we don't recompute each time
