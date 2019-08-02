@@ -82,6 +82,7 @@ class Trial extends Component {
     this.stimulusTimer = undefined;
 
     // time keeping
+    this.componentStartTime = 0;
     this.startTime = 0;
     this.ratingStartTime = 0;
 
@@ -107,7 +108,12 @@ class Trial extends Component {
   }
 
   addTimestamp(eventName) {
-    this.timestamps.push([eventName, new Date().getTime()]);
+    if (eventName == "start") {
+      this.componentStartTime = new Date().getTime();
+      this.timestamps.push([eventName, 0]);
+    } else {
+      this.timestamps.push([eventName, new Date().getTime() - this.componentStartTime]);
+    }
   }
 
   /********************************
@@ -158,13 +164,13 @@ class Trial extends Component {
 
     this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
 
-    this.addTimestamp("presentStimulus");
+    this.addTimestamp("stim");
   }
 
   startTrial() {
     this.setState({trialStarted: true});
     this.stimulusTimer = setTimeout(this.playStimulus, this.initialDelay);
-    this.addTimestamp("startTrial");
+    this.addTimestamp("start");
   }
 
   jitter() {
@@ -172,7 +178,7 @@ class Trial extends Component {
   }
 
   shutdown() {
-    this.addTimestamp("endTrial");
+    this.addTimestamp("end");
     this.saveDataToStore();
     this.setState({complete: true});
   }
@@ -286,7 +292,7 @@ class Trial extends Component {
 
     if (this.state.responseWindow && _.includes([Q_KEY_CODE, E_KEY_CODE], event.keyCode)) {
       // record timestamp
-      this.addTimestamp("response");
+      this.addTimestamp("resp");
 
       var ms = new Date().getTime();
 

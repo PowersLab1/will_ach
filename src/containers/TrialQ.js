@@ -20,7 +20,8 @@ class TrialQ extends Component {
     };
 
     // initializing QUEST
-    let tGuess = 0.5,
+    let tGuess1 = 0.5 + 0.3,
+      tGuess2 = 0.5 - 0.3,
       tGuessSd = 0.1,
       pThreshold = 0.75,
       beta = 3.5,
@@ -30,15 +31,15 @@ class TrialQ extends Component {
       dim = 1000, // Never used? what??
       range = 20;
 
-    this.q1 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
-    this.q2 = new questlib.Quest(tGuess, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q1 = new questlib.Quest(tGuess1, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
+    this.q2 = new questlib.Quest(tGuess2, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
     this.maxIndex = config.debug ? 3 : 19; // Inclusive
 
     // Set initial state
     this.state = {
-      contrasts: [tGuess + 0.3, tGuess - 0.3],
+      contrasts: [tGuess1, tGuess2],
     };
   }
 
