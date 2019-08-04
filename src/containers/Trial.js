@@ -68,7 +68,7 @@ class Trial extends Component {
     this.initialDelay = 2000; // time until first stimulus, in ms
     this.delay = 2500; // time in between stimuli, in ms
     this.numAttempts = 0;
-    this.numAttemptsLimit = 300;
+    this.numAttemptsLimit = 1000;
 
     // user inputs
     this.response = [];

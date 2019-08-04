@@ -146,7 +146,7 @@ export function setDataSent(dataSent) {
 }
 
 // Export data
-export function getEncryptedStore() {
+export function getStoreExport() {
   // Inject task type and name before encrypting store
   const dataToExport = _.clone(LocalStorageBackedStore.store);
   dataToExport[TASK_TYPE_KEY] = config.taskType;
@@ -157,7 +157,7 @@ export function getEncryptedStore() {
   dataToExport["visualStim"] = visualStim;
   dataToExport["auditoryStim"] = auditoryStim;
 
-  return encryptWithPublicKey(JSON.stringify(dataToExport));
+  return JSON.stringify(dataToExport);
 }
 
 // Helper function that checks whether store is ready to be

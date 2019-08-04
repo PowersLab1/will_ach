@@ -3,7 +3,7 @@ import logo from "../media/psych_logo.jpg"
 import './ThankYou.css';
 import { Redirect } from "react-router-dom";
 import {
-  getEncryptedStore,
+  getStoreExport,
   isStoreComplete,
   clearStore,
   clearTaskData,
@@ -45,7 +45,7 @@ class ThankYou extends Component {
     document.addEventListener("keydown", this.keyFunction, false);
 
     const encryptedMetadata = getEncryptedMetadata();
-    const encryptedStore = getEncryptedStore();
+    const storeExport = getStoreExport();
 
     // Load up link if not localhost
     if (!isLocalhost) {
@@ -64,7 +64,7 @@ class ThankYou extends Component {
 
     if (config.debug) {
       console.log("encrypted metadata: " + encryptedMetadata);
-      console.log("encrypted store: " + encryptedStore);
+      console.log("store export: " + storeExport);
       console.log('localStorage: ' + JSON.stringify(localStorage));
     }
 
@@ -86,12 +86,12 @@ class ThankYou extends Component {
     }
 
     // If store is too big, then abort
-    if (encryptedStore.length > CHAR_LIMIT) {
+    if (storeExport.length > CHAR_LIMIT) {
       throw "Store is too big";
     }
 
     // Send request and mark data as sent
-    aws_saveTaskData(encryptedMetadata, encryptedStore).then(
+    aws_saveTaskData(encryptedMetadata, storeExport).then(
       () => {
         setDataSent(true);
         this.setState({sentData: true});
