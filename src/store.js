@@ -100,8 +100,8 @@ function getComponentKey(componentNum) {
 
 export function setComponentData(componentNum, contrasts, response, responseTime, ratings, ratingsRaw, timestamps) {
   const store = LocalStorageBackedStore.store;
-
   const key = getComponentKey(componentNum);
+
   store[key] = {};
   store[key][CONTRASTS_KEY] = contrasts;
   store[key][RESPONSE_KEY] = response;

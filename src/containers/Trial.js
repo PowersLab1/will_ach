@@ -68,7 +68,7 @@ class Trial extends Component {
     this.initialDelay = 2000; // time until first stimulus, in ms
     this.delay = 2500; // time in between stimuli, in ms
     this.numAttempts = 0;
-    this.numAttemptsLimit = 60;
+    this.numAttemptsLimit = 300;
 
     // user inputs
     this.response = [];
@@ -394,8 +394,8 @@ class Trial extends Component {
 
     console.log('index: ' + this.state.index);
     console.log('numAttempts: ' + this.numAttempts);
-  //  console.log('store: ' + JSON.stringify(getStore()));
-//    console.log('localStorage: ' + JSON.stringify(localStorage));
+    console.log('store: ' + JSON.stringify(getStore()));
+    console.log('localStorage: ' + JSON.stringify(localStorage));
     console.log('================================\n');
   }
 } // end class

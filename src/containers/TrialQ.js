@@ -20,8 +20,8 @@ class TrialQ extends Component {
     };
 
     // initializing QUEST
-    let tGuess1 = 0.5 + 0.3,
-      tGuess2 = 0.5 - 0.3,
+    let tGuess1 = 0.25 + 0.15,
+      tGuess2 = 0.25 - 0.3,
       tGuessSd = 0.1,
       pThreshold = 0.75,
       beta = 3.5,
@@ -35,7 +35,9 @@ class TrialQ extends Component {
     this.q2 = new questlib.Quest(tGuess2, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
     this.index = 0;
-    this.maxIndex = config.debug ? 3 : 19; // Inclusive
+     // Each round consists of 2 trials, one per staircase
+    const numRounds = config.debug ? 2 : 10;
+    this.maxIndex = numRounds * 2 - 1; // Inclusive
 
     // Set initial state
     this.state = {
