@@ -7,6 +7,11 @@ import {setComponentData} from '../store';
 var _ = require('lodash');
 
 class Trial_P extends Component {
+  constructor(props) {
+    super(props);
+    this.startTimestamp = new Date().getTime();
+  }
+
   trialCompleteRenderer = (contrasts, response) => {
     // count how many were correct
     let correct = 0;
@@ -29,7 +34,8 @@ class Trial_P extends Component {
       responseTime,
       undefined, // no ratings
       undefined, // no ratings
-      timestamps
+      timestamps,
+      this.startTimestamp
     );
   }
 
