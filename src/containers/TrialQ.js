@@ -15,13 +15,15 @@ class TrialQ extends Component {
     super(props);
 
     // initial states
+    this.startTimestamp = new Date().getTime();
     this.state = {
       contrasts: [],
     };
 
-    // initializing QUEST
+    // Initializing QUEST
+    // NOTE: Modify your quest parameters here!
     let tGuess1 = 0.25 + 0.15,
-      tGuess2 = 0.25 - 0.3,
+      tGuess2 = 0.25 - 0.15,
       tGuessSd = 0.1,
       pThreshold = 0.75,
       beta = 3.5,
@@ -34,12 +36,14 @@ class TrialQ extends Component {
     this.q1 = new questlib.Quest(tGuess1, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
     this.q2 = new questlib.Quest(tGuess2, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
 
-    this.index = 0;
-     // Each round consists of 2 trials, one per staircase
-    const numRounds = config.debug ? 2 : 10;
-    this.maxIndex = numRounds * 2 - 1; // Inclusive
+    // NOTE: Specify how many trials to run for each staircase here.
+    // E.g., numTrialsPerStaircase = 40 means 80 trials total,
+    // 40 per staircase.
+    const numTrialsPerStaircase = config.debug ? 2 : 40;
 
-    // Set initial state
+    // Final bit of initialization
+    this.index = 0;
+    this.maxIndex = numTrialsPerStaircase * 2 - 1;
     this.state = {
       contrasts: [tGuess1, tGuess2],
     };
@@ -91,7 +95,8 @@ class TrialQ extends Component {
       contrasts_q2,
       response_q2,
       responseTime_q2,
-      timestamps
+      timestamps,
+      this.startTimestamp
     );
 
     // Process data

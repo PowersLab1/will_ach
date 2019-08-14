@@ -24,10 +24,10 @@ export const RESPONSE_TIME_KEY = 'responseTime';
 export const RATINGS_KEY = 'ratings';
 export const RATINGS_RAW_KEY = 'ratingsRaw';
 export const TIMESTAMPS_KEY = 'timestamps';
+export const START_TIMESTAMP_KEY = 'startTimestamp';
 
 export const DATA_SENT_KEY = 'dataSent';
 export const STORAGE_KEY = 'store';
-export const TASK_TYPE_KEY = 'taskType';
 export const TASK_NAME_KEY = 'taskName';
 
 const questParamsToKeep = [
@@ -56,7 +56,8 @@ export function setQuestData(
   contrasts_q2,
   response_q2,
   responseTime_q2,
-  timestamps) {
+  timestamps,
+  startTimestamp) {
 
   const store = LocalStorageBackedStore.store;
 
@@ -76,6 +77,7 @@ export function setQuestData(
   store[QUEST_KEY][Q2_KEY]["params"] = _.pick(q2.params, questParamsToKeep);
 
   store[QUEST_KEY][TIMESTAMPS_KEY] = timestamps;
+  store[QUEST_KEY][START_TIMESTAMP_KEY] = startTimestamp;
 
   LocalStorageBackedStore.save();
 }
@@ -98,7 +100,7 @@ function getComponentKey(componentNum) {
   return COMPONENT_KEY_PREFIX + componentNum;
 }
 
-export function setComponentData(componentNum, contrasts, response, responseTime, ratings, ratingsRaw, timestamps) {
+export function setComponentData(componentNum, contrasts, response, responseTime, ratings, ratingsRaw, timestamps, startTimestamp) {
   const store = LocalStorageBackedStore.store;
   const key = getComponentKey(componentNum);
 
@@ -113,6 +115,7 @@ export function setComponentData(componentNum, contrasts, response, responseTime
     store[key][RATINGS_RAW_KEY] = ratingsRaw;
   }
   store[key][TIMESTAMPS_KEY] = timestamps;
+  store[key][START_TIMESTAMP_KEY] = startTimestamp;
 
   LocalStorageBackedStore.save();
 }
@@ -149,7 +152,6 @@ export function setDataSent(dataSent) {
 export function getStoreExport() {
   // Inject task type and name before encrypting store
   const dataToExport = _.clone(LocalStorageBackedStore.store);
-  dataToExport[TASK_TYPE_KEY] = config.taskType;
   dataToExport[TASK_NAME_KEY] = config.taskName;
   dataToExport["taskVersion"] = config.taskVersion;
 

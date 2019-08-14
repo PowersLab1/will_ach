@@ -17,6 +17,7 @@ class Trial_TT_3 extends Component {
     super(props);
 
     // initial states
+    this.startTimestamp = new Date().getTime();
     this.state = {
       contrasts: _.flatten(
         _.slice(create_blocks_singleton(), BLOCK_START, BLOCK_END)
@@ -36,7 +37,8 @@ class Trial_TT_3 extends Component {
       responseTime,
       ratings,
       ratingsRaw,
-      timestamps
+      timestamps,
+      this.startTimestamp
     );
   }
 
