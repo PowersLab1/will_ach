@@ -37,18 +37,26 @@ class VisualStimulus extends Component {
 
     const w = canvas.width;
     const h = canvas.height;
-    const l = canvas.height / 8;
-    const floor = Math.floor(w / l);
-    let xOffset = ((w / l) - Math.floor(w / l)) / 2 * l;
-    if (floor % 2 == 1) {
+    const l = Math.max(100, canvas.height / 8);
+    const xFloor = Math.floor(w / l);
+    const yFloor = Math.floor(h / l);
+    let xOffset = ((w / l) - xFloor) / 2 * l;
+    let yOffset = ((h / l) - yFloor) / 2 * l;
+
+    // if floor is odd, then move offset by half of l
+    if (xFloor % 2 == 1) {
       // if floor is odd, then move offset by half of l
       xOffset += l / 2;
+    }
+    if (yFloor % 2 == 1) {
+      // if floor is odd, then move offset by half of l
+      yOffset += l / 2;
     }
 
     for (var x = 0; x < w; x++) {
       for (var y = 0; y < h; y++) {
         if (this.props.showContrast) {
-          const val = ((Math.floor((x - xOffset + l) / l) % 2) ^ (Math.floor(y / l) % 2)) * 163;
+          const val = (Math.abs(Math.floor((x - xOffset + l) / l) % 2) ^ Math.abs(Math.floor((y - yOffset) / l) % 2)) * 163;
           data[(x + y * w) * 4 + 0] = val;
           data[(x + y * w) * 4 + 1] = val;
           data[(x + y * w) * 4 + 2] = val;

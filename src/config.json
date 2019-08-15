@@ -1,7 +1,7 @@
 {
   "taskVersion": "1.0.0",
   "taskName": "auditory",
-  "debug": true,
+  "debug": false,
   "awsLambda": {
     "saveTaskData": {
       "host": "de8cnjde61.execute-api.us-east-2.amazonaws.com",

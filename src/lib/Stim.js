@@ -78,7 +78,7 @@ function createPatch(stim) {
  export function createAuditoryStim() {
    var stim = {
      duration: 300, // in ms
-     amp: 50,
+     amp: 1,
      frequency: 1000,
    };
 
@@ -96,7 +96,7 @@ function createPatch(stim) {
    var osc = audioContext.createOscillator();
    var gain = audioContext.createGain();
    osc.connect(gain);
-   osc.value = freq;
+   osc.frequency.value = freq;
    gain.connect(audioContext.destination);
    gain.gain.value = amp/100;
    osc.start(audioContext.currentTime);
@@ -116,7 +116,7 @@ export function playWhiteNoise(audioContext) {
     var nowBuffering = noiseBuffer.getChannelData(channel);
     for (var i = 0; i < noiseBuffer.length; i++) {
       // audio needs to be in [-1.0; 1.0]
-      nowBuffering[i] = (Math.random() * 2 - 1) / 2;
+      nowBuffering[i] = (Math.random() * 2 - 1) / 50;
     }
   }
 
