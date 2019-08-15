@@ -17,7 +17,7 @@ class TrialQ extends Component {
     // initial states
     this.startTimestamp = new Date().getTime();
     this.state = {
-      contrasts: [],
+      amplitudes: [],
     };
 
     // Initializing QUEST
@@ -45,28 +45,28 @@ class TrialQ extends Component {
     this.index = 0;
     this.maxIndex = numTrialsPerStaircase * 2 - 1;
     this.state = {
-      contrasts: [tGuess1, tGuess2],
+      amplitudes: [tGuess1, tGuess2],
     };
   }
 
-  pushContrast(contrast) {
-    this.setState({contrasts: [...this.state.contrasts, contrast]});
+  pushAmplitude(amplitude) {
+    this.setState({amplitudes: [...this.state.amplitudes, amplitude]});
   }
 
   responseHandler = (response) => {
-    // By this point we're taking responses for the last 2 contrasts
-    // we pushed. We won't need to push additional contrasts.
+    // By this point we're taking responses for the last 2 amplitudes
+    // we pushed. We won't need to push additional amplitudes.
     if (this.index >= this.maxIndex - 1) {
       this.index++;
       return;
     }
 
     if (this.index % 2 === 0) {
-      this.q1.update(this.state.contrasts[this.index], response);
-      this.pushContrast(this.q1.quantile());
+      this.q1.update(this.state.amplitudes[this.index], response);
+      this.pushAmplitude(this.q1.quantile());
     } else {
-      this.q2.update(this.state.contrasts[this.index], response);
-      this.pushContrast(this.q2.quantile());
+      this.q2.update(this.state.amplitudes[this.index], response);
+      this.pushAmplitude(this.q2.quantile());
     }
     this.index++;
   }
@@ -75,13 +75,13 @@ class TrialQ extends Component {
     return <Redirect to="/Complete" />;
   }
 
-  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
+  dataHandler = (amplitudes, response, responseTime, ratings, ratingsRaw, timestamps) => {
     // Even indices are for staircase 1, odd for staircase 2
-    const contrasts_q1 = contrasts.filter((_, i) => i % 2 === 0);
+    const amplitudes_q1 = amplitudes.filter((_, i) => i % 2 === 0);
     const response_q1 = response.filter((_, i) => i % 2 === 0);
     const responseTime_q1 = responseTime.filter((_, i) => i % 2 === 0);
 
-    const contrasts_q2 = contrasts.filter((_, i) => i % 2 === 1);
+    const amplitudes_q2 = amplitudes.filter((_, i) => i % 2 === 1);
     const response_q2 = response.filter((_, i) => i % 2 === 1);
     const responseTime_q2 = responseTime.filter((_, i) => i % 2 === 1);
 
@@ -89,10 +89,10 @@ class TrialQ extends Component {
     setQuestData(
       this.q1,
       this.q2,
-      contrasts_q1,
+      amplitudes_q1,
       response_q1,
       responseTime_q1,
-      contrasts_q2,
+      amplitudes_q2,
       response_q2,
       responseTime_q2,
       timestamps,
@@ -114,7 +114,7 @@ class TrialQ extends Component {
   render() {
     return (
       <Trial
-        contrasts={this.state.contrasts}
+        amplitudes={this.state.amplitudes}
         shouldRecordRatings={false}
         trialCompleteRenderer={this.trialCompleteRenderer}
         dataHandler={this.dataHandler}

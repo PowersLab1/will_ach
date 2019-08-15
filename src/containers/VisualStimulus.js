@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {visualStim, patch, stimulus_blank, createGabor} from "../lib/Stim.js";
 import RATINGS_1_SRC from "../media/rating_keydown_1.png";
 import RATINGS_2_SRC from "../media/rating_keydown_2.png";
 import RATINGS_3_SRC from "../media/rating_keydown_3.png";
@@ -26,87 +25,58 @@ const ratingToImgSrc = {
 class VisualStimulus extends Component {
   constructor(props) {
     super(props);
-    this.animationFrameId = undefined;
   }
 
-  startAnimation() {
-    var simplex = new SimplexNoise(),
-      canvas = document.getElementById('c'),
+  drawCanvas() {
+    this.resizeCanvas();
+
+    var canvas = document.getElementById('c'),
       ctx = canvas.getContext('2d'),
       imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height),
-      data = imgdata.data,
-      t = 0; // t is used to generate noise over time
+      data = imgdata.data;
 
+    const w = canvas.width;
+    const h = canvas.height;
+    const l = canvas.height / 8;
+    const floor = Math.floor(w / l);
+    let xOffset = ((w / l) - Math.floor(w / l)) / 2 * l;
+    if (floor % 2 == 1) {
+      // if floor is odd, then move offset by half of l
+      xOffset += l / 2;
+    }
 
-    var stimulus = undefined;
-    var that = this;
-    var c = visualStim.alpha * stimulus_blank[0];
-
-    function nextFrame() {
-      for (var x = 0; x < CANVAS_LENGTH; x++) {
-        for (var y = 0; y < CANVAS_LENGTH; y++) {
-          if (that.props.showContrast && that.props.contrast !== 0) {
-            // Populate stimulus data if we don't have it already
-            if (_.isUndefined(stimulus)) {
-              // If the gabor layer has been precomputed for us, th
-              if (that.props.precomputedGabor) {
-                stimulus = that.props.precomputedGabor;
-              } else {
-                // Otherwise, we create it ourselves
-                stimulus = createGabor(patch, that.props.contrast);
-              }
-            }
-
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
-
-            data[(x + y * CANVAS_LENGTH) * 4 + 0] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 0] + (1 - visualStim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 1] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 1] + (1 - visualStim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 2] = visualStim.alpha * stimulus[(x + y * CANVAS_LENGTH) * 4 + 2] + (1 - visualStim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 3] = 255;
-          } else {
-            // Technically we only need reset this once, but it's relatively inexpensive
-            // and convenient so we do it here.
-            stimulus = undefined;
-
-            const r = simplex.noise3D(x / 8, y / 8, t/5) * .5  + 0.65;
-
-            const val = c + (1 - visualStim.alpha) * r * 250;
-            data[(x + y * CANVAS_LENGTH) * 4 + 0] = val;
-            data[(x + y * CANVAS_LENGTH) * 4 + 1] = val;
-            data[(x + y * CANVAS_LENGTH) * 4 + 2] = val;
-            data[(x + y * CANVAS_LENGTH) * 4 + 3] = 255;
-          }
+    for (var x = 0; x < w; x++) {
+      for (var y = 0; y < h; y++) {
+        if (this.props.showContrast) {
+          const val = ((Math.floor((x - xOffset + l) / l) % 2) ^ (Math.floor(y / l) % 2)) * 163;
+          data[(x + y * w) * 4 + 0] = val;
+          data[(x + y * w) * 4 + 1] = val;
+          data[(x + y * w) * 4 + 2] = val;
+          data[(x + y * w) * 4 + 3] = 255;
+        } else {
+          data[(x + y * w) * 4 + 0] = 0;
+          data[(x + y * w) * 4 + 1] = 0;
+          data[(x + y * w) * 4 + 2] = 0;
+          data[(x + y * w) * 4 + 3] = 255;
         }
       }
-
-      ctx.putImageData(imgdata, 0, 0);
-
-      const rectWidth = canvas.width / 8;
-      const rectHeight = canvas.height / 8;
-      ctx.fillStyle = "gray";
-
-
-      var xPos = (canvas.width / 2) - (rectWidth / 2);
-      var yPos = (canvas.height / 2) - (rectHeight / 2);
-
-      ctx.fillRect(xPos, yPos, rectWidth, rectHeight);
-
-
-      // Render next frame
-      that.animationFrameId = window.requestAnimationFrame(nextFrame);
-
-      // Bump t to generate shifting noise
-      t = (t + 1) % (1 << 31);
     }
-    nextFrame();
+
+    ctx.putImageData(imgdata, 0, 0);
+  }
+
+  resizeCanvas() {
+    var canvas = document.getElementById('c');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 
   componentDidMount() {
-    this.startAnimation();
+    this.drawCanvas();
   }
 
-  componentWillUnmount() {
-    window.cancelAnimationFrame(this.animationFrameId);
+  componentDidUpdate(prevProps) {
+    this.drawCanvas();
   }
 
   render() {
@@ -127,8 +97,8 @@ class VisualStimulus extends Component {
           {
             zIndex: 100,
             backgroundColor: "#9e9e9e",
-            width: "100%",
-            height: "100%",
+            width: "100vw",
+            height: "100vh",
             position: "fixed",
             top: 0,
             left: 0,
@@ -136,25 +106,19 @@ class VisualStimulus extends Component {
           }
          }
         ></div>
-        <canvas id="c" width={CANVAS_LENGTH} height={CANVAS_LENGTH} className="center clip-circle"
+        <canvas id="c"
           style={
             {
-              zIndex:1,
-              width: '85vh',
-              height: '85vh',
+              position: "fixed",
+              top: 0,
+              left: 0,
+              zIndex: 1,
+              width: '100%',
+              height: '100%',
             }
           }></canvas>
-        <div className="center circle blurred-edge" style={{zIndex: 3}}></div>
         <div className="center cross-1" style={{zIndex: 10}}></div>
         <div className="center cross-2" style={{zIndex: 10}}></div>
-        <div className="center radial-gradient"
-          style={
-            {
-              zIndex: 20,
-              width: '85vh',
-              height: '85vh',
-            }}></div>
-
       </div>
     );
   } // end render
@@ -165,7 +129,6 @@ VisualStimulus.defaultProps = {
   showContrast: false,
   showRatings: false,
   contrast: 0,
-  precomputedGabor: undefined,
 }
 
 VisualStimulus.propTypes = {
@@ -173,7 +136,6 @@ VisualStimulus.propTypes = {
   showRatings: PropTypes.bool,
   currentRating: PropTypes.number,
   contast: PropTypes.number,
-  precomputedGabor: PropTypes.array,
 }
 
 export default VisualStimulus;

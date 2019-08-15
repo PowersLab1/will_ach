@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import './Trial.css';
 import {
   patch,
-  createGabor,
   auditoryStim,
-  playAuditoryStimulus
+  playAuditoryStimulus,
+  playWhiteNoise,
+  playBrownianNoise
 } from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
 import {Redirect} from "react-router-dom";
@@ -31,7 +32,8 @@ const RATING_KEY_CODES = _.map(
   _.keys(KEY_CODE_TO_RATING),
   (k) => parseInt(k, 10)
 );
-const STIMULUS_MS = 300;
+const VISUAL_STIMULUS_MS = 1000;
+const STIMULUS_MS = 1000;
 
 class Trial extends Component {
   /********************************
@@ -47,7 +49,6 @@ class Trial extends Component {
     this.state = {
       index: 0,
       showContrast: false,
-      contrast: 0,
       responseWindow: false,
       ratingWindow: false,
       trialStarted: false,
@@ -91,20 +92,6 @@ class Trial extends Component {
       Q_KEY_CODE: false,
       E_KEY_CODE: false,
     }
-
-    // Precompute gabor layers for performance
-    // Specifically, we don't want our animation to pause while
-    // trying to compute the gabor layer, which is an expensive operation.
-    // So we instead compute them all in the beginning and then use them later.
-    this.precomputedGabors = [];
-  }
-
-  precomputeGabors() {
-    for (let i = 0; i < this.props.contrasts.length; i++) {
-      if (_.isUndefined(this.precomputedGabors[i])) {
-        this.precomputedGabors[i] = createGabor(patch, this.props.contrasts[i]);
-      }
-    }
   }
 
   addTimestamp(eventName) {
@@ -122,10 +109,9 @@ class Trial extends Component {
    *                              *
    ********************************/
 
-  playVisualStimulus(contrast, ms) {
+  playVisualStimulus(ms) {
     this.setState({
       showContrast: true,
-      contrast: contrast,
     });
     setTimeout(() => {
       this.setState({
@@ -141,7 +127,7 @@ class Trial extends Component {
     }
 
     // If we've reached the end, then shutdown and return
-    if (that.state.index == that.props.contrasts.length) {
+    if (that.state.index == that.props.amplitudes.length) {
       that.shutdown();
       return;
     }
@@ -158,9 +144,9 @@ class Trial extends Component {
     that.startTime = new Date().getTime();
 
     // Play stimuli
-    const contrast = that.props.contrasts[that.state.index];
-    playAuditoryStimulus(auditoryStim, that.audioContext);
-    that.playVisualStimulus(contrast, STIMULUS_MS);
+    const amp = that.props.amplitudes[that.state.index];
+    playAuditoryStimulus(auditoryStim, that.audioContext, amp);
+    that.playVisualStimulus(VISUAL_STIMULUS_MS);
 
     this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
 
@@ -170,6 +156,8 @@ class Trial extends Component {
   startTrial() {
     this.setState({trialStarted: true});
     this.stimulusTimer = setTimeout(this.playStimulus, this.initialDelay);
+    //playWhiteNoise(this.audioContext);
+    playBrownianNoise(this.audioContext);
     this.addTimestamp("start");
   }
 
@@ -185,7 +173,7 @@ class Trial extends Component {
 
   saveDataToStore() {
     this.props.dataHandler(
-      this.props.contrasts,
+      this.props.amplitudes,
       this.response,
       this.responseTime,
       this.ratings,
@@ -213,7 +201,6 @@ class Trial extends Component {
       // Oddly enough, we don't see the initial render unless
       // this is scheduled this way.
       setTimeout(() => {
-        this.precomputeGabors();
         this.setState({readyToStart: true});
       }, 0);
     }
@@ -237,7 +224,7 @@ class Trial extends Component {
       // If trial is complete, then we use the renderer passed in as a prop.
       // This renderer should take care of the redirect logic.
 
-      return this.props.trialCompleteRenderer(this.props.contrasts, this.response);
+      return this.props.trialCompleteRenderer(this.props.amplitudes, this.response);
     }
 
     return (
@@ -248,8 +235,6 @@ class Trial extends Component {
               showContrast={this.state.showContrast}
               showRatings={this.state.ratingWindow}
               currentRating={this.state.currentRating}
-              contrast={this.state.contrast}
-              precomputedGabor={this.precomputedGabors[this.state.index]}
             />
           </div>
         ) : (
@@ -337,10 +322,6 @@ class Trial extends Component {
       } else {
         // Otherwise, move on to the next index
         this.setState({index: this.state.index + 1});
-
-        // Not ideal but we might have to compute these on the fly,
-        // as is the case with the Quest trial.
-        this.precomputeGabors();
       }
     }
   }
@@ -378,14 +359,13 @@ class Trial extends Component {
       index: this.state.index + 1,
       ratingWindow: false,
     });
-    this.precomputeGabors();
     this.stimulusTimer = setTimeout(this.playStimulus, 1000 + this.jitter());
   }
 
   // Debugging
   log_debug() {
     console.log('================================');
-    console.log('all contrasts: ' + this.props.contrasts);
+    console.log('all amplitudes: ' + this.props.amplitudes);
     console.log('all responses: ' + this.response);
     console.log('all responseTime: ' + this.responseTime);
     console.log('all timestamps: ' + JSON.stringify(this.timestamps));
@@ -402,7 +382,7 @@ class Trial extends Component {
 
 
 Trial.defaultProps = {
-  contrasts: config.debug ? _.shuffle([0, 0, 1, 1]) :
+  amplitudes: config.debug ? _.shuffle([1, 1, 1, 1]) :
     _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
@@ -411,7 +391,7 @@ Trial.defaultProps = {
 }
 
 Trial.propTypes = {
-  contrasts: PropTypes.array.isRequired,
+  amplitudes: PropTypes.array.isRequired,
   shouldRecordRatings: PropTypes.bool,
   trialCompleteRenderer: PropTypes.func,
   responseHandler: PropTypes.func,

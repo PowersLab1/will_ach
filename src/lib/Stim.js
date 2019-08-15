@@ -85,8 +85,9 @@ function createPatch(stim) {
    return stim;
  };
 
- export function playAuditoryStimulus(stim, audioContext) {
-   beep(stim.amp, stim.frequency, stim.duration, audioContext);
+ // amp is a value in [0,1]
+ export function playAuditoryStimulus(stim, audioContext, amp=1) {
+   beep(amp * stim.amp, stim.frequency, stim.duration, audioContext);
  }
 
  //amp:0..100, freq in Hz, ms
@@ -101,3 +102,44 @@ function createPatch(stim) {
    osc.start(audioContext.currentTime);
    osc.stop(audioContext.currentTime+ms/1000);
  }
+
+// Courtsey of https://noisehack.com/generate-noise-web-audio-api/
+export function playWhiteNoise(audioContext) {
+  //console.log(2 * audioContext.sampleRate
+  // Create buffer for 2 seconds
+  var bufferSize = 2 * audioContext.sampleRate,
+   noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate),
+   output = noiseBuffer.getChannelData(0);
+
+  // Create an array of
+  for (var i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+  }
+  console.log(output);
+  var whiteNoise = audioContext.createBufferSource();
+  whiteNoise.buffer = noiseBuffer;
+  whiteNoise.loop = true;
+  whiteNoise.start(0);
+  whiteNoise.connect(audioContext.destination);
+}
+
+// Courtsey of https://noisehack.com/generate-noise-web-audio-api/
+export function playBrownianNoise(audioContext) {
+  var bufferSize = 4096;
+  var brownNoise = (function() {
+      var lastOut = 0.0;
+      var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
+      node.onaudioprocess = function(e) {
+          var output = e.outputBuffer.getChannelData(0);
+          for (var i = 0; i < bufferSize; i++) {
+              var white = Math.random() * 2 - 1;
+              output[i] = (lastOut + (0.02 * white)) / 1.02;
+              lastOut = output[i];
+              output[i] *= 3.5; // (roughly) compensate for gain
+          }
+      }
+      return node;
+  })();
+
+  brownNoise.connect(audioContext.destination);
+}
