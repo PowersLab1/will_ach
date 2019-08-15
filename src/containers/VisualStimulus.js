@@ -86,9 +86,9 @@ class VisualStimulus extends Component {
         style={
           {
             zIndex: 101,
-            width: '80vh',
-            height: '40vh',
-            backgroundColor: "#9e9e9e",
+            width: '95vh',
+            height: '50vh',
+            backgroundColor: "black",
             visibility: this.props.showRatings ? 'visible' : 'hidden',
           }
          }
@@ -96,7 +96,7 @@ class VisualStimulus extends Component {
         <div style={
           {
             zIndex: 100,
-            backgroundColor: "#9e9e9e",
+            backgroundColor: "black",
             width: "100vw",
             height: "100vh",
             position: "fixed",

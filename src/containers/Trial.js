@@ -7,6 +7,7 @@ import {
   auditoryStim,
   playAuditoryStimulus,
   playWhiteNoise,
+  playPinkNoise,
   playBrownianNoise
 } from "../lib/Stim.js";
 import VisualStimulus from './VisualStimulus';
@@ -144,9 +145,9 @@ class Trial extends Component {
     that.startTime = new Date().getTime();
 
     // Play stimuli
-    const amp = that.props.amplitudes[that.state.index];
-    playAuditoryStimulus(auditoryStim, that.audioContext, amp);
     that.playVisualStimulus(VISUAL_STIMULUS_MS);
+    const amp = that.props.amplitudes[that.state.index];
+    playAuditoryStimulus(auditoryStim, that.audioContext, STIMULUS_MS, amp);
 
     this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
 
@@ -156,8 +157,10 @@ class Trial extends Component {
   startTrial() {
     this.setState({trialStarted: true});
     this.stimulusTimer = setTimeout(this.playStimulus, this.initialDelay);
-    //playWhiteNoise(this.audioContext);
-    playBrownianNoise(this.audioContext);
+    playWhiteNoise(this.audioContext);
+    //playBrownianNoise(this.audioContext);
+    //playPinkNoise(this.audioContext);
+
     this.addTimestamp("start");
   }
 
