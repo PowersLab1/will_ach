@@ -10,6 +10,7 @@ var questlib = require('questlib');
 
 // CONSTANTS
 export const ENCRYPTED_METADATA_KEY = 'encrypted_metadata';
+export const SURVEY_URL_KEY = 'survey_url';
 
 export const QUEST_KEY = 'quest';
 export const Q1_KEY = 'q1';
@@ -137,6 +138,15 @@ export function setEncryptedMetadata(encryptedMetadata) {
 
 export function getEncryptedMetadata() {
   return LocalStorageBackedStore.store[ENCRYPTED_METADATA_KEY];
+}
+
+export function setSurveyUrl(url) {
+  LocalStorageBackedStore.store[SURVEY_URL_KEY] = url;
+  LocalStorageBackedStore.save();
+}
+
+export function getSurveyUrl() {
+  return LocalStorageBackedStore.store[SURVEY_URL_KEY];
 }
 
 export function getDataSent() {

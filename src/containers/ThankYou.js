@@ -10,6 +10,7 @@ import {
   getEncryptedMetadata,
   setDataSent,
   getDataSent,
+  getSurveyUrl,
 } from '../store';
 import {isLocalhost} from "../lib/utils";
 import {aws_saveTaskData, aws_fetchLink} from "../lib/aws_lambda";
@@ -46,9 +47,14 @@ class ThankYou extends Component {
 
     // Load up link if not localhost
     if (!isLocalhost) {
-      aws_fetchLink(encryptedMetadata).then(
-        (link) => this.setState({link: link})
-      );
+      if (_.isUndefined(getSurveyUrl())) {
+        aws_fetchLink(encryptedMetadata).then(
+          (link) => this.setState({link: link})
+        );
+      } else {
+        this.setState({link: getSurveyUrl()});
+      }
+
     } else {
       this.setState({link: "link"});
     }

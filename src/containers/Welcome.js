@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from "../media/psych_logo.jpg"
 import './Welcome.css';
 import {Redirect} from "react-router-dom";
-import {setEncryptedMetadata, getEncryptedMetadata, getDataSent} from '../store';
+import {setEncryptedMetadata, getEncryptedMetadata, getDataSent, setSurveyUrl} from '../store';
 
 var qs = require('query-string');
 var _ = require('lodash');
@@ -46,6 +46,10 @@ class Welcome extends Component {
     } else {
       // If metadata is passed in as a param, then we set it.
       setEncryptedMetadata(params.id);
+    }
+
+    if (!_.isUndefined(params.survey_url)) {
+      setSurveyUrl(params.survey_url);
     }
 
     // After we update the id and data is still "sent",
