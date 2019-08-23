@@ -20,13 +20,13 @@ class Trial_TT_1 extends Component {
     // initial states
     this.startTimestamp = new Date().getTime();
     this.state = {
-      amplitudes: _.flatten(
+      decibels: _.flatten(
         _.slice(create_blocks_singleton(), BLOCK_START, BLOCK_END)
       ),
     };
   }
 
-  trialCompleteRenderer = (amplitudes, response) => {
+  trialCompleteRenderer = (decibels, response) => {
     // If debugging, then we're done here
     if (config.debug) {
     //  return <Redirect to="/ThankYou" />
@@ -36,10 +36,10 @@ class Trial_TT_1 extends Component {
     }
   }
 
-  dataHandler = (amplitudes, response, responseTime, ratings, ratingsRaw, timestamps) => {
+  dataHandler = (decibels, response, responseTime, ratings, ratingsRaw, timestamps) => {
     setComponentData(
       TRIAL_NUM,
-      amplitudes,
+      decibels,
       response,
       responseTime,
       ratings,
@@ -50,14 +50,14 @@ class Trial_TT_1 extends Component {
   }
 
   render() {
-    // Something went wrong and we don't have amplitudes values from Quest.
-    if (_.isEmpty(this.state.amplitudes)) {
+    // Something went wrong and we don't have decibels values from Quest.
+    if (_.isEmpty(this.state.decibels)) {
       return <Redirect to="/Error" />
     }
 
     return (
       <Trial
-        amplitudes={this.state.amplitudes}
+        decibels={this.state.decibels}
         shouldRecordRatings={true}
         trialCompleteRenderer={this.trialCompleteRenderer}
         dataHandler={this.dataHandler}

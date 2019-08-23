@@ -19,20 +19,20 @@ class Trial_TT_3 extends Component {
     // initial states
     this.startTimestamp = new Date().getTime();
     this.state = {
-      amplitudes: _.flatten(
+      decibels: _.flatten(
         _.slice(create_blocks_singleton(), BLOCK_START, BLOCK_END)
       ),
     };
   }
 
-  trialCompleteRenderer = (amplitudes, response) => {
+  trialCompleteRenderer = (decibels, response) => {
     return <Redirect to="/Break3" />
   }
 
-  dataHandler = (amplitudes, response, responseTime, ratings, ratingsRaw, timestamps) => {
+  dataHandler = (decibels, response, responseTime, ratings, ratingsRaw, timestamps) => {
     setComponentData(
       TRIAL_NUM,
-      amplitudes,
+      decibels,
       response,
       responseTime,
       ratings,
@@ -44,13 +44,13 @@ class Trial_TT_3 extends Component {
 
   render() {
     // Something went wrong and we don't have contrast values from Quest.
-    if (_.isEmpty(this.state.amplitudes)) {
+    if (_.isEmpty(this.state.decibels)) {
       return <Redirect to="/Error" />
     }
 
     return (
       <Trial
-        amplitudes={this.state.amplitudes}
+        decibels={this.state.decibels}
         shouldRecordRatings={true}
         trialCompleteRenderer={this.trialCompleteRenderer}
         dataHandler={this.dataHandler}

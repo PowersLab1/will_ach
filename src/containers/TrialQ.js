@@ -17,14 +17,15 @@ class TrialQ extends Component {
     // initial states
     this.startTimestamp = new Date().getTime();
     this.state = {
-      amplitudes: [],
+      decibels: [],
     };
 
     // Initializing QUEST
     // NOTE: Modify your quest parameters here!
-    let tGuess1 = 0.25 + 0.15,
-      tGuess2 = 0.25 - 0.15,
-      tGuessSd = 0.1,
+    // Decibel
+    let tGuess1 = 58,
+      tGuess2 = 58,
+      tGuessSd = 3,
       pThreshold = 0.75,
       beta = 3.5,
       delta = 0.01,
@@ -45,28 +46,28 @@ class TrialQ extends Component {
     this.index = 0;
     this.maxIndex = numTrialsPerStaircase * 2 - 1;
     this.state = {
-      amplitudes: [tGuess1, tGuess2],
+      decibels: [tGuess1, tGuess2],
     };
   }
 
-  pushAmplitude(amplitude) {
-    this.setState({amplitudes: [...this.state.amplitudes, amplitude]});
+  pushDecibel(decibel) {
+    this.setState({decibels: [...this.state.decibels, decibel]});
   }
 
   responseHandler = (response) => {
-    // By this point we're taking responses for the last 2 amplitudes
-    // we pushed. We won't need to push additional amplitudes.
+    // By this point we're taking responses for the last 2 decibels
+    // we pushed. We won't need to push additional decibels.
     if (this.index >= this.maxIndex - 1) {
       this.index++;
       return;
     }
 
     if (this.index % 2 === 0) {
-      this.q1.update(this.state.amplitudes[this.index], response);
-      this.pushAmplitude(this.q1.quantile());
+      this.q1.update(this.state.decibels[this.index], response);
+      this.pushDecibel(this.q1.quantile());
     } else {
-      this.q2.update(this.state.amplitudes[this.index], response);
-      this.pushAmplitude(this.q2.quantile());
+      this.q2.update(this.state.decibels[this.index], response);
+      this.pushDecibel(this.q2.quantile());
     }
     this.index++;
   }
@@ -75,13 +76,13 @@ class TrialQ extends Component {
     return <Redirect to="/Complete" />;
   }
 
-  dataHandler = (amplitudes, response, responseTime, ratings, ratingsRaw, timestamps) => {
+  dataHandler = (decibels, response, responseTime, ratings, ratingsRaw, timestamps) => {
     // Even indices are for staircase 1, odd for staircase 2
-    const amplitudes_q1 = amplitudes.filter((_, i) => i % 2 === 0);
+    const decibels_q1 = decibels.filter((_, i) => i % 2 === 0);
     const response_q1 = response.filter((_, i) => i % 2 === 0);
     const responseTime_q1 = responseTime.filter((_, i) => i % 2 === 0);
 
-    const amplitudes_q2 = amplitudes.filter((_, i) => i % 2 === 1);
+    const decibels_q2 = decibels.filter((_, i) => i % 2 === 1);
     const response_q2 = response.filter((_, i) => i % 2 === 1);
     const responseTime_q2 = responseTime.filter((_, i) => i % 2 === 1);
 
@@ -89,10 +90,10 @@ class TrialQ extends Component {
     setQuestData(
       this.q1,
       this.q2,
-      amplitudes_q1,
+      decibels_q1,
       response_q1,
       responseTime_q1,
-      amplitudes_q2,
+      decibels_q2,
       response_q2,
       responseTime_q2,
       timestamps,
@@ -114,7 +115,7 @@ class TrialQ extends Component {
   render() {
     return (
       <Trial
-        amplitudes={this.state.amplitudes}
+        decibels={this.state.decibels}
         shouldRecordRatings={false}
         trialCompleteRenderer={this.trialCompleteRenderer}
         dataHandler={this.dataHandler}

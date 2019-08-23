@@ -19,7 +19,7 @@ export const Q2_KEY = 'q2';
 export const PROCESSED_DATA_KEY = 'processedData';
 export const COMPONENT_KEY_PREFIX = 'component_';
 
-export const CONTRASTS_KEY = 'contrasts';
+export const DECIBELS_KEY = 'decibels';
 export const RESPONSE_KEY = 'response';
 export const RESPONSE_TIME_KEY = 'responseTime';
 export const RATINGS_KEY = 'ratings';
@@ -51,10 +51,10 @@ const questParamsToKeep = [
 export function setQuestData(
   q1,
   q2,
-  contrasts_q1,
+  decibels_q1,
   response_q1,
   responseTime_q1,
-  contrasts_q2,
+  decibels_q2,
   response_q2,
   responseTime_q2,
   timestamps,
@@ -67,12 +67,12 @@ export function setQuestData(
   store[QUEST_KEY][Q1_KEY] = {};
   store[QUEST_KEY][Q2_KEY] = {};
 
-  store[QUEST_KEY][Q1_KEY][CONTRASTS_KEY] = contrasts_q1;
+  store[QUEST_KEY][Q1_KEY][DECIBELS_KEY] = decibels_q1;
   store[QUEST_KEY][Q1_KEY][RESPONSE_KEY] = response_q1;
   store[QUEST_KEY][Q1_KEY][RESPONSE_TIME_KEY] = responseTime_q1;
   store[QUEST_KEY][Q1_KEY]["params"] = _.pick(q1.params, questParamsToKeep);
 
-  store[QUEST_KEY][Q2_KEY][CONTRASTS_KEY] = contrasts_q2;
+  store[QUEST_KEY][Q2_KEY][DECIBELS_KEY] = decibels_q2;
   store[QUEST_KEY][Q2_KEY][RESPONSE_KEY] = response_q2;
   store[QUEST_KEY][Q2_KEY][RESPONSE_TIME_KEY] = responseTime_q2;
   store[QUEST_KEY][Q2_KEY]["params"] = _.pick(q2.params, questParamsToKeep);
@@ -101,12 +101,12 @@ function getComponentKey(componentNum) {
   return COMPONENT_KEY_PREFIX + componentNum;
 }
 
-export function setComponentData(componentNum, contrasts, response, responseTime, ratings, ratingsRaw, timestamps, startTimestamp) {
+export function setComponentData(componentNum, decibels, response, responseTime, ratings, ratingsRaw, timestamps, startTimestamp) {
   const store = LocalStorageBackedStore.store;
   const key = getComponentKey(componentNum);
 
   store[key] = {};
-  store[key][CONTRASTS_KEY] = contrasts;
+  store[key][DECIBELS_KEY] = decibels;
   store[key][RESPONSE_KEY] = response;
   store[key][RESPONSE_TIME_KEY] = responseTime;
   if (!_.isUndefined(ratings)) {

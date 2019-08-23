@@ -78,7 +78,7 @@ function createPatch(stim) {
  export function createAuditoryStim() {
    var stim = {
      duration: 300, // in ms
-     amp: 1,
+     amp: 1, // unused
      frequency: 1000,
    };
 
@@ -86,19 +86,20 @@ function createPatch(stim) {
  };
 
  // amp is a value in [0,1]
- export function playAuditoryStimulus(stim, audioContext, duration, amp=1) {
-   beep(amp * stim.amp, stim.frequency, duration ? duration : stim.duration, audioContext);
+ export function playAuditoryStimulus(stim, audioContext, duration, decibel) {
+   beep(decibel, stim.frequency, duration ? duration : stim.duration, audioContext);
  }
 
  //amp:0..100, freq in Hz, ms
- export function beep(amp, freq, ms, audioContext) {
+ //  (10^((desired_db - standard_db)/20))*standard_scale
+ export function beep(decibel, freq, ms, audioContext) {
    if (!audioContext) return;
    var osc = audioContext.createOscillator();
    var gain = audioContext.createGain();
    osc.connect(gain);
    osc.frequency.value = freq;
    gain.connect(audioContext.destination);
-   gain.gain.value = amp/100;
+   gain.gain.value = db2scale(decibel, 0.0068, 76.2);
    osc.start(audioContext.currentTime);
    osc.stop(audioContext.currentTime+ms/1000);
  }
@@ -116,7 +117,7 @@ export function playWhiteNoise(audioContext) {
     var nowBuffering = noiseBuffer.getChannelData(channel);
     for (var i = 0; i < noiseBuffer.length; i++) {
       // audio needs to be in [-1.0; 1.0]
-      nowBuffering[i] = (Math.random() * 2 - 1) / 50;
+      nowBuffering[i] = (Math.random() * 2 - 1) * db2scale(80, 0.0447, 89.5);
     }
   }
 
@@ -175,4 +176,8 @@ export function playBrownianNoise(audioContext) {
   })();
 
   brownNoise.connect(audioContext.destination);
+}
+
+function db2scale(desiredDb, standardScale, standardDb) {
+  return Math.pow(10, (desiredDb - standardDb) / 20) * standardScale;
 }

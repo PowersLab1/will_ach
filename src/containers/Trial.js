@@ -128,7 +128,7 @@ class Trial extends Component {
     }
 
     // If we've reached the end, then shutdown and return
-    if (that.state.index == that.props.amplitudes.length) {
+    if (that.state.index == that.props.decibels.length) {
       that.shutdown();
       return;
     }
@@ -146,7 +146,7 @@ class Trial extends Component {
 
     // Play stimuli
     that.playVisualStimulus(VISUAL_STIMULUS_MS);
-    const amp = that.props.amplitudes[that.state.index];
+    const amp = that.props.decibels[that.state.index];
     playAuditoryStimulus(auditoryStim, that.audioContext, STIMULUS_MS, amp);
 
     this.stimulusTimer = setTimeout(this.playStimulus, that.delay + that.jitter());
@@ -176,7 +176,7 @@ class Trial extends Component {
 
   saveDataToStore() {
     this.props.dataHandler(
-      this.props.amplitudes,
+      this.props.decibels,
       this.response,
       this.responseTime,
       this.ratings,
@@ -227,7 +227,7 @@ class Trial extends Component {
       // If trial is complete, then we use the renderer passed in as a prop.
       // This renderer should take care of the redirect logic.
 
-      return this.props.trialCompleteRenderer(this.props.amplitudes, this.response);
+      return this.props.trialCompleteRenderer(this.props.decibels, this.response);
     }
 
     return (
@@ -368,7 +368,7 @@ class Trial extends Component {
   // Debugging
   log_debug() {
     console.log('================================');
-    console.log('all amplitudes: ' + this.props.amplitudes);
+    console.log('all decibels: ' + this.props.decibels);
     console.log('all responses: ' + this.response);
     console.log('all responseTime: ' + this.responseTime);
     console.log('all timestamps: ' + JSON.stringify(this.timestamps));
@@ -385,8 +385,8 @@ class Trial extends Component {
 
 
 Trial.defaultProps = {
-  amplitudes: config.debug ? _.shuffle([1, 1, 1, 1]) :
-    _.shuffle([0, 0, 0, 0, 0, 1, 1, 1, 1, 1]),
+  decibels: config.debug ? _.shuffle([65, 65, 65, 65]) :
+    _.shuffle([0, 0, 0, 0, 0, 65, 65, 65, 65, 65]),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
   responseHandler: _.noop,
@@ -394,7 +394,7 @@ Trial.defaultProps = {
 }
 
 Trial.propTypes = {
-  amplitudes: PropTypes.array.isRequired,
+  decibels: PropTypes.array.isRequired,
   shouldRecordRatings: PropTypes.bool,
   trialCompleteRenderer: PropTypes.func,
   responseHandler: PropTypes.func,
