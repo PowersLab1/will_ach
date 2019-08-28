@@ -28,7 +28,7 @@ export const TIMESTAMPS_KEY = 'timestamps';
 export const START_TIMESTAMP_KEY = 'startTimestamp';
 
 export const DATA_SENT_KEY = 'dataSent';
-export const STORAGE_KEY = 'store';
+export const STORAGE_KEY = config.taskName;
 export const TASK_NAME_KEY = 'taskName';
 
 const questParamsToKeep = [
