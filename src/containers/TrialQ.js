@@ -27,11 +27,10 @@ class TrialQ extends Component {
       tGuess2 = 58,
       tGuessSd = 3,
       pThreshold = 0.75,
-      beta = 3.5,
+      beta = 0.1,
       delta = 0.01,
       gamma = 0.01,
-      grain = 0.001,
-      dim = 1000, // Never used? what??
+      grain = 0.15,
       range = 20;
 
     this.q1 = new questlib.Quest(tGuess1, tGuessSd, pThreshold, beta, delta, gamma, grain, range);
