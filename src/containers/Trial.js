@@ -386,7 +386,7 @@ class Trial extends Component {
 
 Trial.defaultProps = {
   decibels: config.debug ? _.shuffle([65, 65, 65, 65]) :
-    _.shuffle([0, 0, 0, 0, 0, 65, 65, 65, 65, 65]),
+    _.concat([65], _.shuffle([0, 0, 0, 0, 0, 65, 65, 65, 65])),
   shouldRecordRatings: false,
   trialCompleteRenderer: _.noop,
   responseHandler: _.noop,
