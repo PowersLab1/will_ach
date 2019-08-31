@@ -38,7 +38,6 @@ class Complete extends Component {
         <div className="text-container">
           <p className="Complete-text">
             Congratulations!
-            Congratulations!
             <br /><br /> First part of the experiment is over.
             <br /><br /> Now we will continue with the next trials. Now, there will be ratings similar to the second practice.
             <br /><br /> You will see a rating screen following each checkerboard, press
