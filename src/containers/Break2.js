@@ -41,8 +41,8 @@ class Break2 extends Component {
                 <br /><br /> Great!!! Take a quick break. Two more to go!
                 <br /><br /> Remember: Continue to listen carefully and do the best you can.
                 <br /><br /> The task will continue to be difficult, but it is okay to guess and it is okay to be uncertain.
-                <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>hear a tone.
-                <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b>hear a tone.
+                <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b> hear a tone.
+                <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> hear a tone.
                 <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
                 <br /><br /><br /> PRESS "Q"/YES TO CONTINUE WITH THE NEXT PART
 

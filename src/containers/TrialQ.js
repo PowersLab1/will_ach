@@ -23,11 +23,11 @@ class TrialQ extends Component {
     // Initializing QUEST
     // NOTE: Modify your quest parameters here!
     // Decibel
-    let tGuess1 = 58,
-      tGuess2 = 58,
-      tGuessSd = 3,
+    let tGuess1 = 55,
+      tGuess2 = 55,
+      tGuessSd = 10,
       pThreshold = 0.75,
-      beta = 0.1,
+      beta = 14,
       delta = 0.01,
       gamma = 0.01,
       grain = 0.15,
@@ -45,7 +45,7 @@ class TrialQ extends Component {
     this.index = 0;
     this.maxIndex = numTrialsPerStaircase * 2 - 1;
     this.state = {
-      decibels: [tGuess1, tGuess2],
+      decibels: [tGuess1+3, tGuess2-3],
     };
   }
 

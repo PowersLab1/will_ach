@@ -79,10 +79,12 @@ class Welcome extends Component {
         <div className="text-container">
           <p className="Welcome-text">
             <span className="bigger">Welcome to the study! </span>
+            <br /><br /> In this task you will be asked to indicate whether you hear a tone being played.
             <br /><br />Please enter responses to the questions asked by pressing the:
-            <br /><br /><b> 'Q' key for 'YES I HEAR IT'</b> or <b> 'E' key for "NO I DO NOT'</b>
+            <br /><br />  <font size="+2"> <b> 'Q' key for 'YES I HEAR IT'</b> or <b> 'E' key for "NO I DO NOT'</b> </font>
             <br /><br /><br /><br /> Sometimes it may be difficult to answer, but if you do not know, please make your best guess.
-            <br /><br /><br /><br /> PRESS the <b> YES I HEAR IT / 'Q' key</b> to CONTINUE
+            <br /><br /><br /><br /> Please keep your volume (including headphones) and screen brightness at maximum level throughout the experiment.
+            <br /><br /><br /><br /> PRESS the <b> YES I SEE IT / 'Q' key </b> to CONTINUE
 
           </p>
         </div>

@@ -38,12 +38,13 @@ class OnceMore extends Component {
             <header className="OnceMore-header">
             <div className="text-container">
               <p className="OnceMore-text">
-                <br /><br /> Good job! One more practice session. Get ready! Remember,
-                <br /><br /> a striped-texture might appear inside the white noise when a tone is played.
-                <br /><br /> Press <b> "Q"/YES </b> if you <b> DO </b>see the stripes.
-                <br /><br /> Press <b> "E"/NO </b> if you <b> DO NOT </b> see the stripes.
-                <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
-                <br /><br /><br /> PRESS "Q"/YES TO BEGIN A SHORT PRACTICE SESSION
+              <br /><br /> Nice job, but you didn't reach the required accuracy level, so make sure you are pressing the right keys at the right time.
+              <br /><br /> You will now have one more practice session. Get ready! Remember,
+              <br /><br /> a tone might play while the white noise continues when there is a checkerboard on the screen.
+              <br /><br /> Press  <font size="+2">  <b> "Q"/YES </b> </font> if you <b> DO </b>hear the tone.
+              <br /><br /> Press <font size="+2"> <b> "E"/NO </b> </font> if you <b> DO NOT </b> hear the tone.
+              <br /><br /> Please respond as <b> QUICKLY </b> and as <b> ACCURATELY </b> as you <b> POSSIBLY CAN </b>
+              <br /><br /><br /> PRESS "Q"/YES TO BEGIN A SHORT PRACTICE SESSION
 
               </p>
             </div>
