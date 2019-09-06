@@ -99,7 +99,7 @@ function createPatch(stim) {
    osc.connect(gain);
    osc.frequency.value = freq;
    gain.connect(audioContext.destination);
-   gain.gain.value = db2scale(decibel, 0.0068, 76.2);
+   gain.gain.value = db2scale(decibel, 0.0006418, 56.3);
    osc.start(audioContext.currentTime);
    osc.stop(audioContext.currentTime+ms/1000);
  }
@@ -117,7 +117,7 @@ export function playWhiteNoise(audioContext) {
     var nowBuffering = noiseBuffer.getChannelData(channel);
     for (var i = 0; i < noiseBuffer.length; i++) {
       // audio needs to be in [-1.0; 1.0]
-      nowBuffering[i] = (Math.random() * 2 - 1) * db2scale(80, 0.0447, 89.5);
+      nowBuffering[i] = (Math.random() * 2 - 1) * db2scale(80, 0.0150, 78.3);
     }
   }
 

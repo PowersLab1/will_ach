@@ -23,9 +23,9 @@ class TrialQ extends Component {
     // Initializing QUEST
     // NOTE: Modify your quest parameters here!
     // Decibel
-    let tGuess1 = 80-22,
-      tGuess2 = 80-22,
-      tGuessSd = 3,
+    let tGuess1 = 55,
+      tGuess2 = 55,
+      tGuessSd = 10,
       pThreshold = 0.75,
       beta = 14,
       delta = 0.01,
