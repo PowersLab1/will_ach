@@ -38,9 +38,8 @@ class OnceMore_rating extends Component {
             <header className="OnceMore_rating-header">
             <div className="text-container">
               <p className="OnceMore_rating-text">
-              <br /><br /> Nice job, but you didn't reach the required accuracy level, so make sure you are pressing the right keys at the right time,
-              <br /><br /> and holding the button down to indicate accuracy ratings. You will now have one more practice session. Get ready!
-              <br /><br /><br /> PRESS "Q"/YES WHEN READY TO CONTINUE.
+                <br /><br /> Good! job Now let's practice once more.
+                <br /><br /><br /> PRESS "Q"/YES WHEN READY TO CONTINUE.
 
               </p>
             </div>

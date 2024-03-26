@@ -12,24 +12,24 @@ class Trial_P extends Component {
     this.startTimestamp = new Date().getTime();
   }
 
-  trialCompleteRenderer = (decibels, response) => {
+  trialCompleteRenderer = (contrasts, response) => {
     // count how many were correct
     let correct = 0;
     for (let i = 0; i < response.length; i++) {
-      correct += response[i] == (decibels[i] > 0);
+      correct += response[i] == (contrasts[i] > 0);
     }
 
-    if (correct > 0.7 * decibels.length) {
+    if (correct > 0.7 * contrasts.length) {
       return <Redirect to="/Continue" />
     } else {
       return <Redirect to="/OnceMore" />;
     }
   }
 
-  dataHandler = (decibels, response, responseTime, ratings, ratingsRaw, timestamps) => {
+  dataHandler = (contrasts, response, responseTime, ratings, ratingsRaw, timestamps) => {
     setComponentData(
       "practice",
-      decibels,
+      contrasts,
       response,
       responseTime,
       undefined, // no ratings

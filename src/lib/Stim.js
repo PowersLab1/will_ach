@@ -78,106 +78,26 @@ function createPatch(stim) {
  export function createAuditoryStim() {
    var stim = {
      duration: 300, // in ms
-     amp: 1, // unused
-     frequency: 1000,
+     amp: 1, //originally set to 15 but this is too loud
+     frequency: 500,
    };
 
    return stim;
  };
 
- // amp is a value in [0,1]
- export function playAuditoryStimulus(stim, audioContext, duration, decibel) {
-   beep(decibel, stim.frequency, duration ? duration : stim.duration, audioContext);
+ export function playAuditoryStimulus(stim, audioContext) {
+   beep(stim.amp, stim.frequency, stim.duration, audioContext);
  }
 
  //amp:0..100, freq in Hz, ms
- //  (10^((desired_db - standard_db)/20))*standard_scale
- export function beep(decibel, freq, ms, audioContext) {
+ export function beep(amp, freq, ms, audioContext) {
    if (!audioContext) return;
    var osc = audioContext.createOscillator();
    var gain = audioContext.createGain();
    osc.connect(gain);
    osc.frequency.value = freq;
    gain.connect(audioContext.destination);
-   gain.gain.value = db2scale(decibel, 0.0006418, 56.3);
+   gain.gain.value = amp/100;
    osc.start(audioContext.currentTime);
    osc.stop(audioContext.currentTime+ms/1000);
  }
-
-// Courtsey of https://noisehack.com/generate-noise-web-audio-api/
-export function playWhiteNoise(audioContext) {
-  //console.log(2 * audioContext.sampleRate
-  // Create buffer for 2 seconds
-  var bufferSize = 3 * audioContext.sampleRate,
-   noiseBuffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate),
-   output = noiseBuffer.getChannelData(0);
-
-  for (var channel = 0; channel < noiseBuffer.numberOfChannels; channel++) {
-    // This gives us the actual ArrayBuffer that contains the data
-    var nowBuffering = noiseBuffer.getChannelData(channel);
-    for (var i = 0; i < noiseBuffer.length; i++) {
-      // audio needs to be in [-1.0; 1.0]
-      nowBuffering[i] = (Math.random() * 2 - 1) * db2scale(80, 0.0150, 78.3);
-    }
-  }
-
-  var whiteNoise = audioContext.createBufferSource();
-  whiteNoise.buffer = noiseBuffer;
-  whiteNoise.loop = true;
-  whiteNoise.connect(audioContext.destination);
-  whiteNoise.start(0);
-}
-
-// Courtsey of https://noisehack.com/generate-noise-web-audio-api/
-export function playPinkNoise(audioContext) {
-  var bufferSize = 4096;
-  var pinkNoise = (function() {
-    var b0, b1, b2, b3, b4, b5, b6;
-    b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-    var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
-    node.onaudioprocess = function(e) {
-      var output = e.outputBuffer.getChannelData(0);
-      for (var i = 0; i < bufferSize; i++) {
-        var white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        b3 = 0.86650 * b3 + white * 0.3104856;
-        b4 = 0.55000 * b4 + white * 0.5329522;
-        b5 = -0.7616 * b5 - white * 0.0168980;
-        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-        output[i] *= 0.11; // (roughly) compensate for gain
-        b6 = white * 0.115926;
-      }
-    }
-    return node;
-  })();
-
-  pinkNoise.connect(audioContext.destination);
-}
-
-
-// Courtsey of https://noisehack.com/generate-noise-web-audio-api/
-export function playBrownianNoise(audioContext) {
-  var bufferSize = 4096;
-  var brownNoise = (function() {
-      var lastOut = 0.0;
-      var node = audioContext.createScriptProcessor(bufferSize, 1, 1);
-      node.onaudioprocess = function(e) {
-          var output = e.outputBuffer.getChannelData(0);
-          for (var i = 0; i < bufferSize; i++) {
-              var white = Math.random() * 2 - 1;
-              output[i] = (lastOut + (0.02 * white)) / 1.02;
-              lastOut = output[i];
-              output[i] *= 3.5; // (roughly) compensate for gain
-          }
-      }
-      return node;
-  })();
-
-  brownNoise.connect(audioContext.destination);
-}
-
-function db2scale(desiredDb, standardScale, standardDb) {
-  return Math.pow(10, (desiredDb - standardDb) / 20) * standardScale;
-}

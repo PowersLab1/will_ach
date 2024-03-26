@@ -117,7 +117,7 @@ class ThankYou extends Component {
       return (
         <div className="ThankYou">
           <p className="ThankYou-text">
-            Loading...
+            Loading... (if stuck her for more than 30s try refreshing a few  times)
           </p>
         </div>
       );
@@ -129,7 +129,7 @@ class ThankYou extends Component {
         <header className="ThankYou-header">
         <div className="text-container">
           <p className="ThankYou-text">
-            <span className="bigger"> The experiment is over. Thank you for taking part in the study! </span>
+            <span className="bigger"> You finished the game! Thank you for helping science! </span>
             <br /><br /> Please <a href={this.state.link}>click here</a> or press 'Q' to return to the survey.
           </p>
         </div>
